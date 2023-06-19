@@ -2,6 +2,7 @@
   "scanSettings": {
     "baseBranches": []
   },
+"schedule": ["every hour"]
   "checkRunSettings": {
     "vulnerableCheckRunConclusionLevel": "failure",
     "displayMode": "diff"
