@@ -21,4 +21,9 @@ services:
     image: vulnerables/web-dvwa:1.9
     ports:
       - "80:80"
+  vulnerable-node:
+    restart: always
+    image: node:10.14.2- jessie
+    ports:
+      - "80:80"
   
