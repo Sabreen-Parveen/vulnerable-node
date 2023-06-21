@@ -14,6 +14,7 @@ jobs:
         id: scan
         with:
           path: "."
+          fail-build: true
       - name: Create/Update an issue of vulnerabilities 🛡️ that have been detected
         if: ${{ failure() }}
         uses: actions/github-script@v6
