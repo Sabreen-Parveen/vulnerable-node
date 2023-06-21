@@ -20,7 +20,7 @@ jobs:
         if: ${{ failure() }}
         uses: actions/github-script@v6
         with:
-          repo-token: ${{ secrets.GITHUB_TOKEN }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
           debug: true
           script: |
             const { owner, repo } = context.repo;
