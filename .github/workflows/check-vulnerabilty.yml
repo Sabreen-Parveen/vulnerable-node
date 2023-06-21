@@ -13,10 +13,9 @@ jobs:
       - uses: anchore/scan-action@v3
         id: scan
         with:
-          path: "."
-          fail-build: true
-          severity-cutoff: low
-          run: exit 1
+         image: optnc/domaine-nc-api:latest
+         fail-build: true
+         severity-cutoff: critical
       - name: Create/Update an issue of vulnerabilities 🛡️ that have been detected
         if: ${{ failure() }}
         uses: actions/github-script@v6
