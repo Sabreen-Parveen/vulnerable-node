@@ -17,7 +17,13 @@ jobs:
         id: generate-image-matrix
         run: |
           ls
-          echo "images=$(cat ./docker-compose.yml | grep -i "image:" | awk '{print $2}')" >> "$GITHUB_OUTPUT"
+          export images=$(cat ./docker-compose.yml | grep -i "image:" | awk '{print $2}')
+          delimiter="$(openssl rand -hex 8)"
+          echo "images<<${delimiter}" >> ${GITHUB_OUTPUT}
+          echo "${images}" >> ${GITHUB_OUTPUT}
+          echo "${delimiter}" >> ${GITHUB_OUTPUT}
+
+          # echo "images=$(cat ./docker-compose.yml | grep -i "image:" | awk '{print $2}')" >> "$GITHUB_OUTPUT"
 
   scan:
     name: 🛡️ Scan image latest
