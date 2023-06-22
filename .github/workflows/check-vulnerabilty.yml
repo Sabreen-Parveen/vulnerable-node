@@ -16,8 +16,7 @@ jobs:
       - name: Generate Image Matrix
         id: generate-image-matrix
         run: |
-          ls
-          export images=$(cat ./docker-compose.yml | grep -i "image:" | awk '{print $2}')
+          export images=($(cat docker-compose.yml | grep -i "image:" | awk '{print $2}'))
           delimiter="$(openssl rand -hex 8)"
           echo "images<<${delimiter}" >> ${GITHUB_OUTPUT}
           echo "${images}" >> ${GITHUB_OUTPUT}
@@ -36,7 +35,7 @@ jobs:
       - uses: anchore/scan-action@v3
         id: scan
         with:
-         image: optnc/domaine-nc-api:latest
+         image: ${{ matrix.images }}
          fail-build: true
          severity-cutoff: critical
 
