@@ -19,8 +19,10 @@ jobs:
          image: optnc/domaine-nc-api:latest
          fail-build: true
          severity-cutoff: critical
-        run: echo result=$(cat ${{ steps.scan.outputs.sarif }} | jq -r '.runs[0].tool.driver.rules[].shortDescription.text') >> $GITHUB_OUTPUT
 
+      - name: get the output
+        run: echo result=$(cat ${{ steps.scan.outputs.sarif }} | jq -r '.runs[0].tool.driver.rules[].shortDescription.text') >> $GITHUB_OUTPUT
+ 
       - name: Create/Update an issue of vulnerabilities 🛡️ that have been detected
         if: ${{ failure() }}
         uses: actions/github-script@v6
