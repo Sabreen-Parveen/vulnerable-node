@@ -24,9 +24,9 @@ jobs:
         if: ${{ failure() }}
         run: |
           cat ${{ steps.scan.outputs.sarif }} | jq -r '.runs[0].tool.driver.rules[].shortDescription.text'
-          echo result=$(cat ${{ steps.scan.outputs.sarif }} | jq -r '.runs[0].tool.driver.rules[].shortDescription.text')
-          echo result=$(cat ${{ steps.scan.outputs.sarif }} | jq -r '.runs[0].tool.driver.rules[].shortDescription.text') >> $GITHUB_OUTPUT
-          echo $result
+          export result=$(cat ${{ steps.scan.outputs.sarif }} | jq -r '.runs[0].tool.driver.rules[].shortDescription.text')
+          # echo result=$(cat ${{ steps.scan.outputs.sarif }} | jq -r '.runs[0].tool.driver.rules[].shortDescription.text') >> $GITHUB_OUTPUT
+          # echo $result
  
       - name: Create/Update an issue of vulnerabilities 🛡️ that have been detected
         if: ${{ failure() }}
@@ -45,7 +45,7 @@ jobs:
             ${{ steps.scan.outputs.result }}
             \`\`\`
                 `;
-            # console.log(${{ steps.scan.outputs.result }});
+            console.log(process.env.result);
             console.log(body);
 
             github.rest.issues.create({
