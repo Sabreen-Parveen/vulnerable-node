@@ -23,9 +23,13 @@ jobs:
       - name: get the output
         if: ${{ failure() }}
         run: |
-          x=$(cat ${{ steps.scan.outputs.sarif }} | jq -r '.runs[0].tool.driver.rules[].shortDescription.text') 
-          x=$(echo $x | base64)
-          echo "result=$x" >> $GITHUB_ENV
+          # x=$(cat ${{ steps.scan.outputs.sarif }} | jq -r '.runs[0].tool.driver.rules[].shortDescription.text') 
+          # x=$(echo $x | base64)
+          export result=$(cat ${{ steps.scan.outputs.sarif }} | jq -r '.runs[0].tool.driver.rules[].shortDescription.text')
+          delimiter="$(openssl rand -hex 8)"
+          echo "result<<${delimiter}" >> ${GITHUB_ENV}
+          echo "${result}" >> ${GITHUB_ENV}
+          echo "${delimiter}" >> ${GITHUB_ENV}
           # echo "result=$(cat ${{ steps.scan.outputs.sarif }} | jq -r '.runs[0].tool.driver.rules[].shortDescription.text')" >> "$GITHUB_ENV"
           # echo result=$(cat ${{ steps.scan.outputs.sarif }} | jq -r '.runs[0].tool.driver.rules[].shortDescription.text') >> $GITHUB_OUTPUT
           # echo $result
