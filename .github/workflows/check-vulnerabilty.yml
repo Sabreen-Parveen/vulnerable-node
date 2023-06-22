@@ -27,6 +27,14 @@ jobs:
           done
           # echo "images=$(cat ./docker-compose.yml | grep -i "image:" | awk '{print $2}')" >> "$GITHUB_OUTPUT"
 
+  my_echo:
+    runs-on: ubuntu-latest
+    needs:
+      - get_images
+    steps:
+      - name: Echo previous outputs
+        run: echo "${{ toJSON(needs.get_images.outputs) }}"
+
   scan:
     name: 🛡️ Scan image latest
     runs-on: ubuntu-latest
