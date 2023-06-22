@@ -16,12 +16,12 @@ jobs:
          image: optnc/domaine-nc-api:latest
          fail-build: true
          severity-cutoff: critical
-         output-format: table
-      - name: Upload artifact
-        uses: actions/upload-artifact@v1.0.0
-        with:
-          name: AnchoreReports
-          path: ./anchore-reports/
+        #  output-format: table
+      # - name: Upload artifact
+      #   uses: actions/upload-artifact@v1.0.0
+      #   with:
+      #     name: AnchoreReports
+      #     path: ./anchore-reports/
       - name: Create/Update an issue of vulnerabilities 🛡️ that have been detected
         if: ${{ failure() }}
         uses: actions/github-script@v6
@@ -36,10 +36,10 @@ jobs:
 
             Following vulnerabilities have been detected :
             \`\`\`
-            ${{ steps.scan.outputs.report }}
+            ${{ steps.scan.outputs.sarif }}
             \`\`\`
                 `;
-            console.log(${{ steps.scan.outputs.table }});
+            console.log(${{ steps.scan.outputs.sarif }});
             console.log(body);
 
             github.rest.issues.create({
