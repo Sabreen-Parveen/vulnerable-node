@@ -18,7 +18,8 @@ jobs:
         run: |
           images=($(cat docker-compose.yml | grep -i "image:" | awk '{print $2}'))
           for image in "${images[@]}"
-          do
+          do  
+              echo $image
               echo "images=$image" >> $GITHUB_OUTPUT
               # delimiter="$(openssl rand -hex 8)"
               # echo "images<<${delimiter}" >> ${GITHUB_OUTPUT}
