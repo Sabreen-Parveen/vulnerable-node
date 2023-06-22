@@ -26,7 +26,7 @@ jobs:
           for image in "${images[@]}"
           do  
               echo $image
-              echo "images=$image" >> $GITHUB_OUTPUT
+              # echo "images=$image" >> $GITHUB_OUTPUT
               # delimiter="$(openssl rand -hex 8)"
               # echo "images<<${delimiter}" >> ${GITHUB_OUTPUT}
               echo "${image}" >> ${GITHUB_OUTPUT}
