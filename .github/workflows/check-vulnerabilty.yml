@@ -16,6 +16,7 @@ jobs:
          image: optnc/domaine-nc-api:latest
          fail-build: true
          severity-cutoff: critical
+         output-format: table
       - name: Upload artifact
         uses: actions/upload-artifact@v1.0.0
         with:
@@ -38,7 +39,7 @@ jobs:
             ${{ steps.scan.outputs.report }}
             \`\`\`
                 `;
-            console.log(${{ steps.scan.outputs }});
+            console.log(${{ steps.scan.outputs.table }});
             console.log(body);
 
             github.rest.issues.create({
