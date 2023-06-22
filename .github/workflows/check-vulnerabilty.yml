@@ -16,7 +16,7 @@ jobs:
       - name: Generate Image Matrix
         id: generate-image-matrix
         run: |
-          export images=$(cat docker-compose.yml | grep -i "image:" | awk '{print $2}')
+          export images=($(cat docker-compose.yml | grep -i "image:" | awk '{print $2}'))
           echo $images
           delimiter="$(openssl rand -hex 8)"
           echo "images<<${delimiter}" >> ${GITHUB_OUTPUT}
