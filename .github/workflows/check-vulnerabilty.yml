@@ -22,7 +22,7 @@ jobs:
 
       - name: get the output
         run: |
-        cat ${{ steps.scan.outputs.sarif }} | jq -r '.runs[0].tool.driver.rules[].shortDescription.text'
+          cat ${{ steps.scan.outputs.sarif }} | jq -r '.runs[0].tool.driver.rules[].shortDescription.text'
         # echo result=$(cat ${{ steps.scan.outputs.sarif }} | jq -r '.runs[0].tool.driver.rules[].shortDescription.text') >> $GITHUB_OUTPUT
  
       - name: Create/Update an issue of vulnerabilities 🛡️ that have been detected
