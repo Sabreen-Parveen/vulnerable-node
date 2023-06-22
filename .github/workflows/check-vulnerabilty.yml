@@ -33,6 +33,8 @@ jobs:
             ${{ steps.scan_report.outputs.report }}
             \`\`\`
                 `;
+            
+            console.log(body);
 
             github.rest.issues.create({
               owner, repo,
