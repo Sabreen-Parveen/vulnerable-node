@@ -48,7 +48,7 @@ jobs:
 
             Following vulnerabilities have been detected :
             \`\`\`
-            ${{ process.env.result }}
+            process.env.result
             \`\`\`
                 `;
             console.log(process.env.result);
