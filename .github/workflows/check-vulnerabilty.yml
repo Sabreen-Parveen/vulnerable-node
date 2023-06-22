@@ -26,12 +26,6 @@ jobs:
             const { owner, repo } = context.repo;
             const labels = ['security', 'docker-scan', 'Alert : Docker image scan'];
 
-            // récupération de l'id de la dernière issue (si existante)
-            const existingIssue = (await github.paginate(github.rest.issues.listForRepo.endpoint.merge({
-              owner, repo, state: 'open',labels
-            }))).filter(i => i.title.indexOf('Docker image security scan') !== -1)[0];
-
-            // création ou modification de l'issue
             const body = `Workflow failed for commit ${{github.sha}}.        
 
             Following vulnerabilities have been detected :
@@ -40,13 +34,9 @@ jobs:
             \`\`\`
                 `;
 
-            if (existingIssue) {
-              github.rest.issues.update({ owner, repo, issue_number: existingIssue.number, body });
-            } else {
-              github.rest.issues.create({
-                owner, repo,
-                title : '🛡️ Docker image security scan failed 🛡️',
-                body,
-                labels
-              });
-            }
+            github.rest.issues.create({
+              owner, repo,
+              title : '🛡️ Docker image security scan failed 🛡️',
+              body,
+              labels
+            });
