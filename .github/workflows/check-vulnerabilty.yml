@@ -11,6 +11,8 @@ jobs:
     outputs:
       images: ${{ toJSON(steps.generate-image-matrix.outputs.images) }}
     steps:
+      - name: checkout repo
+        uses: actions/checkout@v3
       - name: Generate Image Matrix
         id: generate-image-matrix
         run: |
