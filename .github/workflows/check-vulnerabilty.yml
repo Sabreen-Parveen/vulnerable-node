@@ -9,6 +9,9 @@ jobs:
   scan:
     name: 🛡️ Scan image latest
     runs-on: ubuntu-latest
+    outputs:
+      # Map the step outputs to job outputs
+      result: ${{steps.my_step.outputs.result}}
     steps:
       - uses: anchore/scan-action@v3
         id: scan
@@ -16,6 +19,8 @@ jobs:
          image: optnc/domaine-nc-api:latest
          fail-build: true
          severity-cutoff: critical
+        run: echo result=$(cat ${{ steps.scan.outputs.sarif }} | jq -r '.runs[0].tool.driver.rules[].shortDescription.text') >> $GITHUB_OUTPUT
+
       - name: Create/Update an issue of vulnerabilities 🛡️ that have been detected
         if: ${{ failure() }}
         uses: actions/github-script@v6
@@ -30,10 +35,10 @@ jobs:
 
             Following vulnerabilities have been detected :
             \`\`\`
-            ${{ steps.scan.outputs.sarif }}
+            ${{ steps.scan.outputs.result }}
             \`\`\`
                 `;
-            # console.log(${{ steps.scan.outputs.sarif }});
+            # console.log(${{ steps.scan.outputs.result }});
             console.log(body);
 
             github.rest.issues.create({
