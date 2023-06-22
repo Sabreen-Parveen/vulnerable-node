@@ -48,7 +48,7 @@ jobs:
 
             Following vulnerabilities have been detected :
             \`\`\`
-            ${{ steps.scan.outputs.result }}
+            ${{ process.env.result }}
             \`\`\`
                 `;
             console.log(process.env.result);
