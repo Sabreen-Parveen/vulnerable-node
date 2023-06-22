@@ -11,7 +11,7 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       # Map the step outputs to job outputs
-      result: ${{steps.my_step.outputs.result}}
+      result: ${{steps.scan.outputs.result}}
     steps:
       - uses: anchore/scan-action@v3
         id: scan
