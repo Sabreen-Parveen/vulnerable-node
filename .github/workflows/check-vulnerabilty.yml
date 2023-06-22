@@ -9,9 +9,9 @@ jobs:
   scan:
     name: 🛡️ Scan image latest
     runs-on: ubuntu-latest
-    outputs:
-      # Map the step outputs to job outputs
-      result: ${{steps.scan.outputs.result}}
+    # outputs:
+    #   # Map the step outputs to job outputs
+    #   result: ${{steps.scan.outputs.result}}
     steps:
       - uses: anchore/scan-action@v3
         id: scan
