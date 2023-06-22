@@ -30,7 +30,7 @@ jobs:
               # delimiter="$(openssl rand -hex 8)"
               # echo "images<<${delimiter}" >> ${GITHUB_OUTPUT}
               echo "${image}" >> ${GITHUB_OUTPUT}
-              echo "," >> ${GITHUB_OUTPUT}         
+              echo "${delimiter}" >> ${GITHUB_OUTPUT}         
           done
           # echo "images=$(cat ./docker-compose.yml | grep -i "image:" | awk '{print $2}')" >> "$GITHUB_OUTPUT"
 
