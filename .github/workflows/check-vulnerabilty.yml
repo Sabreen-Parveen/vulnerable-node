@@ -38,7 +38,7 @@ jobs:
             ${{ steps.scan.outputs.report }}
             \`\`\`
                 `;
-            console.log(steps.scan.outputs);
+            console.log(${{ steps.scan.outputs }});
             console.log(body);
 
             github.rest.issues.create({
