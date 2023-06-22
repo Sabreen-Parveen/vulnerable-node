@@ -6,12 +6,24 @@ on:
       - master
 
 jobs:
+  get_images:
+    runs-on: ubuntu-latest
+    outputs:
+      images: ${{ toJSON(steps.generate-image-matrix.outputs.images) }}
+    steps:
+      - name: Generate Image Matrix
+        id: generate-image-matrix
+        run: |
+          ls
+          echo "images=$(cat ./docker-compose.yml | grep -i "image:" | awk '{print $2}')" >> "$GITHUB_OUTPUT"
+
   scan:
     name: 🛡️ Scan image latest
     runs-on: ubuntu-latest
-    # outputs:
-    #   # Map the step outputs to job outputs
-    #   result: ${{steps.scan.outputs.result}}
+    needs: get_images
+    strategy:
+      matrix:
+        images: ${{ fromJSON(needs.get_images.outputs.images) }}
     steps:
       - uses: anchore/scan-action@v3
         id: scan
@@ -25,7 +37,7 @@ jobs:
         run: |
           # x=$(cat ${{ steps.scan.outputs.sarif }} | jq -r '.runs[0].tool.driver.rules[].shortDescription.text') 
           # x=$(echo $x | base64)
-          export result=$(cat ${{ steps.scan.outputs.sarif }} | jq -r '.runs[0].tool.driver.rules[].shortDescription.text')
+          export result=$(cat ${{ steps.scan.outputs.sarif }})
           delimiter="$(openssl rand -hex 8)"
           echo "result<<${delimiter}" >> ${GITHUB_ENV}
           echo "${result}" >> ${GITHUB_ENV}
