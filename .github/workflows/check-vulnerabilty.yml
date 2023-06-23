@@ -38,8 +38,8 @@ jobs:
     name: 🛡️ Scan image latest
     runs-on: "ubuntu-22.04"
     needs: get_images
-    strategy:
-      matrix: ${{ fromJSON(needs.get_images.outputs.images) }}
+    # strategy:
+    #   matrix: ${{ fromJSON(needs.get_images.outputs.images) }}
     steps:
       - uses: anchore/scan-action@v3
         id: scan
