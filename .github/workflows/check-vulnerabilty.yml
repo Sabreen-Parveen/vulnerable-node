@@ -9,7 +9,7 @@ jobs:
   get_images:
     runs-on: ubuntu-latest
     outputs:
-      images: ${{ steps.*.outputs.images }}
+      images: ${{ steps.generate-image-matrix.outputs.images }}
     steps:
       - name: checkout repo
         uses: actions/checkout@v3
