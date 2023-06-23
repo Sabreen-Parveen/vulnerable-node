@@ -54,8 +54,7 @@ jobs:
           # x=$(cat ${{ steps.scan.outputs.sarif }} | jq -r '.runs[0].tool.driver.rules[].shortDescription.text') 
           # x=$(echo $x | base64)
           export result=$(cat ${{ steps.scan.outputs.sarif }} | jq -r '.runs[0].tool.driver.rules[].shortDescription.text')
-          delimiter="873359bee08cf98e"
-          echo $delimiter
+          delimiter="$(openssl rand -hex 8)"
           echo "result<<${delimiter}" >> ${GITHUB_ENV}
           echo "${result}" >> ${GITHUB_ENV}
           echo "${delimiter}" >> ${GITHUB_ENV}
@@ -64,7 +63,7 @@ jobs:
           # echo $result
  
       - name: Create/Update an issue of vulnerabilities 🛡️ that have been detected
-        if: ${{ failure() }} 
+        if: ${{ failure() }}
         uses: actions/github-script@v6
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
@@ -80,7 +79,7 @@ jobs:
             ${{ env.result }}
             \`\`\`
                 `;
-            console.log(env.result);
+            console.log(process.env.result);
             console.log(body);
 
             github.rest.issues.create({
