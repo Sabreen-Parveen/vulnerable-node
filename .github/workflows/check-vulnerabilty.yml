@@ -17,7 +17,7 @@ jobs:
         id: generate
         run: |
           images=($(cat docker-compose.yml | grep -i "image:" | awk '{print $2}'))
-          image=$(jq -c -n '{include: $ARGS.positional}' --args "${images[@]}")
+          image=$(jq -c -n '$ARGS.positional' --args "${images[@]}")
           echo $image
           echo "dimages=$(echo $image | jq -Ra .)" >> $GITHUB_OUTPUT  
           echo "matrix={\"include\":[{\"project\":\"foo\",\"config\":\"Debug\"},{\"project\":\"bar\",\"config\":\"Release\"}]}" >> $GITHUB_OUTPUT        
