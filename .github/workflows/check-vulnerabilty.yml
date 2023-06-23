@@ -35,10 +35,10 @@ jobs:
               echo "images=$image" >> $GITHUB_OUTPUT  
           done
           # echo "images=$(cat ./docker-compose.yml | grep -i "image:" | awk '{print $2}')" >> "$GITHUB_OUTPUT"
-        - name: sf Image Matrix
-          id: generate-image-matrix
-          run: |
-            echo "images=dfjkf" >> $GITHUB_OUTPUT  
+      - name: sf Image Matrix
+        id: generate-image-matrix
+        run: |
+          echo "images=dfjkf" >> $GITHUB_OUTPUT  
 
 
   my_echo:
