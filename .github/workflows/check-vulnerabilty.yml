@@ -24,7 +24,7 @@ jobs:
           # echo "${delimiter}" >> ${GITHUB_OUTPUT}  
           # echo "::set-output name=matrix::{\"include\":[{\"project\":\"foo\",\"config\":\"Debug\"},{\"project\":\"bar\",\"config\":\"Release\"}]}"
           echo "${images[@]}" | xargs | sed -e 's/ /, /g'
-          echo "images=$image" >> $GITHUB_OUTPUT  
+          echo "images=${images[@]}" >> $GITHUB_OUTPUT  
           # for image in "${images[@]}"
           # do  
           #     echo $image
