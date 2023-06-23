@@ -17,30 +17,33 @@ jobs:
         id: generate-image-matrix
         run: |
           images=($(cat docker-compose.yml | grep -i "image:" | awk '{print $2}'))
-          echo $images
+          image=$(jq -c -n '$ARGS.positional' --args "${images[@]}")
+          echo "images=$image" >> $GITHUB_OUTPUT  
           # delimiter="$(openssl rand -hex 8)"
           # echo "images<<${delimiter}" >> ${GITHUB_OUTPUT}
           # echo "${images[@]}" >> ${GITHUB_OUTPUT}
           # echo "${delimiter}" >> ${GITHUB_OUTPUT}  
           # echo "::set-output name=matrix::{\"include\":[{\"project\":\"foo\",\"config\":\"Debug\"},{\"project\":\"bar\",\"config\":\"Release\"}]}"
           # echo "${images[@]}" | xargs | sed -e 's/ /, /g'
-          echo "images=${images[@]}" >> $GITHUB_OUTPUT  
-          # for image in "${images[@]}"
-          # do  
-          #     echo $image
-          #     # echo "images=$image" >> $GITHUB_OUTPUT
-          #     # delimiter="$(openssl rand -hex 8)"
-          #     # echo "images<<${delimiter}" >> ${GITHUB_OUTPUT}
-          #     # echo "${delimiter}" >> ${GITHUB_OUTPUT}         
-          #     # echo "${image}" >> ${GITHUB_OUTPUT}
-          #     # echo "${delimiter}" >> ${GITHUB_OUTPUT}     
-          #     echo "images=$image" >> $GITHUB_OUTPUT  
-          # done
+          # echo "images=${images[@]}" >> $GITHUB_OUTPUT  
+          for image in "${images[@]}"
+          do  
+              echo $image
+              echo "myoutput=$(jq -cn --argjson environments $TARGETS '{target: $environments}')" >> $GITHUB_OUTPUT          
+
+              # echo "images=$image" >> $GITHUB_OUTPUT
+              # delimiter="$(openssl rand -hex 8)"
+              # echo "images<<${delimiter}" >> ${GITHUB_OUTPUT}
+              # echo "${delimiter}" >> ${GITHUB_OUTPUT}         
+              # echo "${image}" >> ${GITHUB_OUTPUT}
+              # echo "${delimiter}" >> ${GITHUB_OUTPUT}     
+              echo "images=$image" >> $GITHUB_OUTPUT  
+          done
           # echo "images=$(cat ./docker-compose.yml | grep -i "image:" | awk '{print $2}')" >> "$GITHUB_OUTPUT"
-      - name: sf Image Matrix
-        id: generatef-image-matrix
-        run: |
-          echo "images=dfjkf" >> $GITHUB_OUTPUT  
+      # - name: sf Image Matrix
+      #   id: generatef-image-matrix
+      #   run: |
+      #     echo "images=dfjkf" >> $GITHUB_OUTPUT  
 
 
   my_echo:
@@ -83,7 +86,7 @@ jobs:
           # echo $result
  
       - name: Create/Update an issue of vulnerabilities 🛡️ that have been detected
-        if: ${{ failure() }} 
+        if: ${{ failure() && env.result}} 
         uses: actions/github-script@v6
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
