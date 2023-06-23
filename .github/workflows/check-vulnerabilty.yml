@@ -26,19 +26,19 @@ jobs:
           # echo "::set-output name=matrix::{\"include\":[{\"project\":\"foo\",\"config\":\"Debug\"},{\"project\":\"bar\",\"config\":\"Release\"}]}"
           # echo "${images[@]}" | xargs | sed -e 's/ /, /g'
           # echo "images=${images[@]}" >> $GITHUB_OUTPUT  
-          for image in "${images[@]}"
-          do  
-              echo $image
-              echo "myoutput=$(jq -cn --argjson environments $TARGETS '{target: $environments}')" >> $GITHUB_OUTPUT          
+          # for image in "${images[@]}"
+          # do  
+          #     echo $image
+          #     echo "myoutput=$(jq -cn --argjson environments $TARGETS '{target: $environments}')" >> $GITHUB_OUTPUT          
 
-              # echo "images=$image" >> $GITHUB_OUTPUT
-              # delimiter="$(openssl rand -hex 8)"
-              # echo "images<<${delimiter}" >> ${GITHUB_OUTPUT}
-              # echo "${delimiter}" >> ${GITHUB_OUTPUT}         
-              # echo "${image}" >> ${GITHUB_OUTPUT}
-              # echo "${delimiter}" >> ${GITHUB_OUTPUT}     
-              echo "images=$image" >> $GITHUB_OUTPUT  
-          done
+          #     # echo "images=$image" >> $GITHUB_OUTPUT
+          #     # delimiter="$(openssl rand -hex 8)"
+          #     # echo "images<<${delimiter}" >> ${GITHUB_OUTPUT}
+          #     # echo "${delimiter}" >> ${GITHUB_OUTPUT}         
+          #     # echo "${image}" >> ${GITHUB_OUTPUT}
+          #     # echo "${delimiter}" >> ${GITHUB_OUTPUT}     
+          #     echo "images=$image" >> $GITHUB_OUTPUT  
+          # done
           # echo "images=$(cat ./docker-compose.yml | grep -i "image:" | awk '{print $2}')" >> "$GITHUB_OUTPUT"
       # - name: sf Image Matrix
       #   id: generatef-image-matrix
