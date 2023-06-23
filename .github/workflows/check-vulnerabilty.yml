@@ -9,7 +9,7 @@ jobs:
   get_images:
     runs-on: ubuntu-latest
     outputs:
-      images: ${{ toJSON(steps.*.outputs.images) }}
+      images: ${{ steps.*.outputs.images }}
     steps:
       - name: checkout repo
         uses: actions/checkout@v3
