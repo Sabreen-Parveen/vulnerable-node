@@ -54,7 +54,7 @@ jobs:
           # x=$(cat ${{ steps.scan.outputs.sarif }} | jq -r '.runs[0].tool.driver.rules[].shortDescription.text') 
           # x=$(echo $x | base64)
           export result=$(cat ${{ steps.scan.outputs.sarif }} | jq -r '.runs[0].tool.driver.rules[].shortDescription.text')
-          delimiter=873359bee08cf98e
+          delimiter="873359bee08cf98e"
           echo $delimiter
           echo "result<<${delimiter}" >> ${GITHUB_ENV}
           echo "${result}" >> ${GITHUB_ENV}
