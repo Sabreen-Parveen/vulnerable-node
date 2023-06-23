@@ -9,7 +9,7 @@ jobs:
   get_images:
     runs-on: ubuntu-latest
     outputs:
-      images: ${{ steps.generate.outputs.dimages }}
+      images: ${{ steps.generate.outputs.matrix }}
     steps:
       - name: checkout repo
         uses: actions/checkout@v3
@@ -19,7 +19,9 @@ jobs:
           images=($(cat docker-compose.yml | grep -i "image:" | awk '{print $2}'))
           image=$(jq -c -n '{images: $ARGS.positional}' --args "${images[@]}")
           echo $image
-          echo "dimages=$(echo $image | jq -Ra .)" >> $GITHUB_OUTPUT  
+          echo $image | jq -Ra .
+          # echo "dimages=$(echo $image | jq -Ra .)" >> $GITHUB_OUTPUT  
+          echo "matrix={\"include\":[{\"project\":\"foo\",\"config\":\"Debug\"},{\"project\":\"bar\",\"config\":\"Release\"}]}" >> $GITHUB_OUTPUT        
           # delimiter="$(openssl rand -hex 8)"
           # echo "images<<${delimiter}" >> ${GITHUB_OUTPUT}
           # echo "${images[@]}" >> ${GITHUB_OUTPUT}
