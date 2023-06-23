@@ -23,17 +23,19 @@ jobs:
           # echo "${images[@]}" >> ${GITHUB_OUTPUT}
           # echo "${delimiter}" >> ${GITHUB_OUTPUT}  
           # echo "::set-output name=matrix::{\"include\":[{\"project\":\"foo\",\"config\":\"Debug\"},{\"project\":\"bar\",\"config\":\"Release\"}]}"
-          for image in "${images[@]}"
-          do  
-              echo $image
-              # echo "images=$image" >> $GITHUB_OUTPUT
-              # delimiter="$(openssl rand -hex 8)"
-              # echo "images<<${delimiter}" >> ${GITHUB_OUTPUT}
-              # echo "${delimiter}" >> ${GITHUB_OUTPUT}         
-              # echo "${image}" >> ${GITHUB_OUTPUT}
-              # echo "${delimiter}" >> ${GITHUB_OUTPUT}     
-              echo "images=$image" >> $GITHUB_OUTPUT  
-          done
+          echo "${images[@]}" | xargs | sed -e 's/ /, /g'
+          echo "images=$image" >> $GITHUB_OUTPUT  
+          # for image in "${images[@]}"
+          # do  
+          #     echo $image
+          #     # echo "images=$image" >> $GITHUB_OUTPUT
+          #     # delimiter="$(openssl rand -hex 8)"
+          #     # echo "images<<${delimiter}" >> ${GITHUB_OUTPUT}
+          #     # echo "${delimiter}" >> ${GITHUB_OUTPUT}         
+          #     # echo "${image}" >> ${GITHUB_OUTPUT}
+          #     # echo "${delimiter}" >> ${GITHUB_OUTPUT}     
+          #     echo "images=$image" >> $GITHUB_OUTPUT  
+          # done
           # echo "images=$(cat ./docker-compose.yml | grep -i "image:" | awk '{print $2}')" >> "$GITHUB_OUTPUT"
       - name: sf Image Matrix
         id: generatef-image-matrix
@@ -69,6 +71,8 @@ jobs:
         run: |
           # x=$(cat ${{ steps.scan.outputs.sarif }} | jq -r '.runs[0].tool.driver.rules[].shortDescription.text') 
           # x=$(echo $x | base64)
+          echo "Let us see the output"
+          echo $(cat ${{ steps.scan.outputs.sarif }})
           export result=$(cat ${{ steps.scan.outputs.sarif }} | jq -r '.runs[0].tool.driver.rules[].shortDescription.text')
           delimiter="$(openssl rand -hex 8)"
           echo "result<<${delimiter}" >> ${GITHUB_ENV}
@@ -79,7 +83,7 @@ jobs:
           # echo $result
  
       - name: Create/Update an issue of vulnerabilities 🛡️ that have been detected
-        if: ${{ failure() }}
+        if: ${{ failure() }} 
         uses: actions/github-script@v6
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
