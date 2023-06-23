@@ -7,7 +7,7 @@ on:
 
 jobs:
   get_images:
-    runs-on: ubuntu-latest
+    runs-on: "ubuntu-22.04"
     outputs:
       images: ${{ steps.generate-image-matrix.outputs.imageMatrix }}
     steps:
@@ -27,7 +27,7 @@ jobs:
 
 
   my_echo:
-    runs-on: ubuntu-latest
+    runs-on: "ubuntu-22.04"
     needs:
       - get_images
     steps:
@@ -36,7 +36,7 @@ jobs:
 
   scan:
     name: 🛡️ Scan image latest
-    runs-on: ubuntu-latest
+    runs-on: "ubuntu-22.04"
     needs: get_images
     strategy:
       matrix: ${{ fromJSON(needs.get_images.outputs.images) }}
