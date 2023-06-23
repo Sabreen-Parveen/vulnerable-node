@@ -17,7 +17,8 @@ jobs:
         id: generate-image-matrix
         run: |
           images=($(cat docker-compose.yml | grep -i "image:" | awk '{print $2}'))
-          image=$(jq -c -n '$ARGS.positional' --args "${images[@]}")
+          image=$(jq -c -n '{images: $ARGS.positional}' --args "${images[@]}")
+          echo $image
           echo "images=$image" >> $GITHUB_OUTPUT  
           # delimiter="$(openssl rand -hex 8)"
           # echo "images<<${delimiter}" >> ${GITHUB_OUTPUT}
@@ -52,7 +53,7 @@ jobs:
       - get_images
     steps:
       - name: Echo previous outputs
-        run: echo "${{ toJSON(needs.get_images.outputs) }}"
+        run: echo "${{ fromJSON(needs.get_images.outputs) }}"
 
   scan:
     name: 🛡️ Scan image latest
