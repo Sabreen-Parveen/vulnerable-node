@@ -57,7 +57,7 @@ jobs:
           export result=$(cat ${{ steps.scan.outputs.sarif }} | jq -r '.runs[0].tool.driver.rules[].shortDescription.text' | base64)
           delimiter="$(openssl rand -hex 8)"
           echo "result<<${delimiter}" >> ${GITHUB_ENV}
-          echo "${result}" >> ${GITHUB_ENV}
+          echo "efe" >> ${GITHUB_ENV}
           echo "${delimiter}" >> ${GITHUB_ENV}
           # echo "result=$(cat ${{ steps.scan.outputs.sarif }} | jq -r '.runs[0].tool.driver.rules[].shortDescription.text')" >> "$GITHUB_ENV"
           # echo result=$(cat ${{ steps.scan.outputs.sarif }} | jq -r '.runs[0].tool.driver.rules[].shortDescription.text') >> $GITHUB_OUTPUT
@@ -80,7 +80,7 @@ jobs:
             ${{ env.result }}
             \`\`\`
                 `;
-            console.log(process.env.result);
+            # console.log(process.env.result);
             console.log(body);
 
             github.rest.issues.create({
