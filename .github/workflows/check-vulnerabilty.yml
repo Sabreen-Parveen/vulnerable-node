@@ -53,7 +53,7 @@ jobs:
       - get_images
     steps:
       - name: Echo previous outputs
-        run: echo "${{ fromJSON(needs.get_images.outputs) }}"
+        run: echo "${{ fromJson(needs.get_images.outputs) }}"
 
   scan:
     name: 🛡️ Scan image latest
