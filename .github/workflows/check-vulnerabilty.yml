@@ -44,7 +44,7 @@ jobs:
       - uses: anchore/scan-action@v3
         id: scan
         with:
-         image: ${{ matrix.images }}
+         image: node:10.14.2-jessie
          fail-build: true
          severity-cutoff: critical
 
