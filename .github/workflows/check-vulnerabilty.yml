@@ -51,8 +51,9 @@ jobs:
       - name: get the output
         if: ${{ failure() }}
         run: |
-          # x=$(cat ${{ steps.scan.outputs.sarif }} | jq -r '.runs[0].tool.driver.rules[].shortDescription.text') 
+          x=$(cat ${{ steps.scan.outputs.sarif }}) 
           # x=$(echo $x | base64)
+          echo $x
           export result=$(cat ${{ steps.scan.outputs.sarif }} | jq -r '.runs[0].tool.driver.rules[].shortDescription.text' | base64)
           delimiter="$(openssl rand -hex 8)"
           echo "result<<${delimiter}" >> ${GITHUB_ENV}
