@@ -9,12 +9,12 @@ jobs:
   get_images:
     runs-on: ubuntu-latest
     outputs:
-      images: ${{ steps.generate-image-matrix.outputs.images }}
+      images: ${{ steps.generate.outputs.images }}
     steps:
       - name: checkout repo
         uses: actions/checkout@v3
       - name: Generate Image Matrix
-        id: generate-image-matrix
+        id: generate
         run: |
           images=($(cat docker-compose.yml | grep -i "image:" | awk '{print $2}'))
           image=$(jq -c -n '{images: $ARGS.positional}' --args "${images[@]}")
