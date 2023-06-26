@@ -22,13 +22,13 @@ jobs:
           # echo "dimages=$(echo $image | jq -R .)" >> $GITHUB_OUTPUT  
           echo "myoutput=$(jq -cn --argjson environments $image '{images: $environments}')" >> $GITHUB_OUTPUT          
 
-  my_echo:
-    runs-on: ubuntu-latest
-    needs:
-      - get_images
-    steps:
-      - name: Echo previous outputs
-        run: echo "${{ toJSON(needs.get_images.outputs.images) }}"
+  # my_echo:
+  #   runs-on: ubuntu-latest
+  #   needs:
+  #     - get_images
+  #   steps:
+  #     - name: Echo previous outputs
+  #       run: echo "${{ toJSON(needs.get_images.outputs.images) }}"
 
   scan:
     name: 🛡️ Scan image latest
@@ -87,10 +87,11 @@ jobs:
               body,
               labels
             });
+            console.log(response)
 
-            await github.rest.issues.createComment({
-              issue_number: response.id,
-              owner,
-              repo,
-              body
-            })
+            # await github.rest.issues.createComment({
+            #   issue_number: response.id,
+            #   owner,
+            #   repo,
+            #   body
+            # })
