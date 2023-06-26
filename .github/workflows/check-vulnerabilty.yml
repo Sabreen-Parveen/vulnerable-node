@@ -81,7 +81,7 @@ jobs:
             # console.log(process.env.result);
             # console.log(body);
 
-            let response = await github.rest.issues.create({
+            let response = github.rest.issues.create({
               owner, repo,
               title : '🛡️ Docker image security scan failed 🛡️',
               body,
