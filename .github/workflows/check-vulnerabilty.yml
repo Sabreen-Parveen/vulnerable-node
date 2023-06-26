@@ -65,20 +65,20 @@ jobs:
 
             const issueBody = `Workflow failed for commit ${{github.sha}}.        
 
-            Following vulnerabilities have been detected in image `:
+            Following vulnerabilities have been detected in image:
             \`\`\`
             ${data}
             \`\`\`
                 `;
 
-            github.rest.issues.create({
+            const response = await github.rest.issues.create({
               owner, repo,
               title : '🛡️ Docker image security scan failed 🛡️',
               body,
               labels
             });
 
-            # console.log(response)
+            console.log(response)
             # github.rest.issues.createComment({
             #   issue_number: response.id
             #   owner, repo,
