@@ -51,7 +51,7 @@ jobs:
           debug: true
           script: |
             const fs = require('fs');
-            const outputs = require(${{ steps.scan.outputs.sarif }})
+            const outputs = require('${{ steps.scan.outputs.sarif }}')
             console.log('outputs',outputs)
 
             const { owner, repo } = context.repo;
