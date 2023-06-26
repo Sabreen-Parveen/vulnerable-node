@@ -83,16 +83,6 @@ jobs:
               labels
             });
 
-            # const issueBody = `Workflow failed for commit ${{github.sha}}.        
-
-            # Following vulnerabilities have been detected in ${{ matrix.images }} docker image:
-            # \`\`\`
-            # ${{ env.result }}
-            # \`\`\`
-            #     `;
-            # console.log(process.env.result);
-            console.log(body);
-
             await github.rest.issues.createComment({
               issue_number: response.id,
               owner,
