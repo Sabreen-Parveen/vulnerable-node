@@ -73,11 +73,3 @@ jobs:
               labels
             });
 
-            # console.log(response)
-            # github.rest.issues.createComment({
-            #   issue_number: response.id
-            #   owner, repo,
-            #   body: issueBody
-            # });
-
-
