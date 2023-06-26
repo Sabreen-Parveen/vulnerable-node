@@ -72,7 +72,6 @@ jobs:
             #     return data.help.markdown
             #   })
 
-            console.log(requiredRes);
             
             
             const issueBody = `Workflow failed for commit ${{github.sha}}.        
