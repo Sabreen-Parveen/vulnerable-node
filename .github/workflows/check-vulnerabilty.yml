@@ -60,12 +60,12 @@ jobs:
 
             const body = `Workflow failed for commit ${{github.sha}}.        
 
-            Following vulnerabilities have been detected in image \`${{ matrix.images }}\`:
+            Following vulnerabilities have been detected in image ${{ matrix.images }}:
                 `;
 
             const issueBody = `Workflow failed for commit ${{github.sha}}.        
 
-            Following vulnerabilities have been detected in image \`${{ matrix.images }}\`:
+            Following vulnerabilities have been detected in image `:
             \`\`\`
             ${data}
             \`\`\`
