@@ -43,6 +43,7 @@ jobs:
          image: ${{ matrix.images }}
          fail-build: true
          severity-cutoff: critical
+         output-format: json
       - name: Create/Update an issue of vulnerabilities 🛡️ that have been detected
         if: ${{ failure() }}
         uses: actions/github-script@v6
@@ -52,9 +53,9 @@ jobs:
           script: |
             const fs = require('fs');
           
-            const data = fs.readFileSync(`${{ steps.scan.outputs.sarif }}`, 'utf8');
+            const data = fs.readFileSync(`${{ steps.scan.outputs.json }}`, 'utf8');
             const jsonData = JSON.parse(data).runs[0].tool.driver.rules;
-            # console.log(jsonData)
+            console.log(jsonData)
 
             const { owner, repo } = context.repo;
             const labels = ['security', 'docker-scan', 'Alert : Docker image scan'];
@@ -66,8 +67,7 @@ jobs:
       
             \`\`\`
                 `;
-            const vulnarableData=jsonData.map((vulnerability) => console.log("vxc", vulnerability))
-
+            
             const issueBody = `Workflow failed for commit ${{github.sha}}.
 
             Following vulnerabilities have been detected :
