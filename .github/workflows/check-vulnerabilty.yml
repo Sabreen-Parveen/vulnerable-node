@@ -70,7 +70,7 @@ jobs:
             const issueBody = `Workflow failed for commit ${{github.sha}}.        
 
             Following vulnerabilities have been detected :
-             ${jsonData.runs[0].tool.driver.rules[].help.markdown}
+             ${jsonData.runs[0].tool.driver.rules[0].help.markdown}
                 `;
 
             const response = await github.rest.issues.create({
