@@ -54,7 +54,7 @@ jobs:
           
             const data = fs.readFileSync(`${{ steps.scan.outputs.sarif }}`, 'utf8');
             const jsonData = JSON.parse(data).runs[0].tool.driver.rules;
-            console.log(jsonData)
+            # console.log(jsonData)
 
             const { owner, repo } = context.repo;
             const labels = ['security', 'docker-scan', 'Alert : Docker image scan'];
@@ -66,6 +66,8 @@ jobs:
       
             \`\`\`
                 `;
+            const vulnarableData=jsonData.map((vulnerability) => vulnerability.help.markdown)
+            console.log(vulnarableData)
 
             const issueBody = `Workflow failed for commit ${{github.sha}}.
 
