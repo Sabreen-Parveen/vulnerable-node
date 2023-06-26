@@ -53,7 +53,8 @@ jobs:
             const fs = require('fs');
           
             const data = fs.readFileSync(`${{ steps.scan.outputs.sarif }}`, 'utf8');
-            jsonData = JSON.parse(data)
+            const jsonData = JSON.parse(data);
+            console.log(jsonData)
 
             const { owner, repo } = context.repo;
             const labels = ['security', 'docker-scan', 'Alert : Docker image scan'];
