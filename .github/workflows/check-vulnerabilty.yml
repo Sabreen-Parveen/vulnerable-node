@@ -75,7 +75,8 @@ jobs:
 
             const body = `Workflow failed for commit ${{github.sha}}.        
 
-            Vulnerabilities have been detected in ${{ matrix.images }} docker image
+            Vulnerabilities have been detected in ${{ matrix.images }} docker image:
+            outputs
                 `;
             # console.log(process.env.result);
             # console.log(body);
@@ -91,5 +92,5 @@ jobs:
               issue_number: response.id,
               owner,
               repo,
-              body: ${{ env.result }}
+              body
             })
