@@ -44,20 +44,20 @@ jobs:
          fail-build: true
          severity-cutoff: critical
 
-      - name: get the output
-        if: ${{ failure() }}
-        run: |
-          # x=$(cat ${{ steps.scan.outputs.sarif }}) 
-          # x=$(echo $x | base64)
-          # echo $x
-          export result=$(cat ${{ steps.scan.outputs.sarif }} | jq -r '.runs[0].tool.driver.rules[].shortDescription.text')
-          delimiter="91312c8fc042d4b4"
-          echo "result<<${delimiter}" >> ${GITHUB_ENV}
-          echo "${result}" >> ${GITHUB_ENV}
-          echo "${delimiter}" >> ${GITHUB_ENV}
-          # echo "result=$(cat ${{ steps.scan.outputs.sarif }} | jq -r '.runs[0].tool.driver.rules[].shortDescription.text')" >> "$GITHUB_ENV"
-          # echo result=$(cat ${{ steps.scan.outputs.sarif }} | jq -r '.runs[0].tool.driver.rules[].shortDescription.text') >> $GITHUB_OUTPUT
-          # echo $result
+      # - name: get the output
+      #   if: ${{ failure() }}
+      #   run: |
+      #     # x=$(cat ${{ steps.scan.outputs.sarif }}) 
+      #     # x=$(echo $x | base64)
+      #     # echo $x
+      #     export result=$(cat ${{ steps.scan.outputs.sarif }} | jq -r '.runs[0].tool.driver.rules[].shortDescription.text')
+      #     delimiter="91312c8fc042d4b4"
+      #     echo "result<<${delimiter}" >> ${GITHUB_ENV}
+      #     echo "${result}" >> ${GITHUB_ENV}
+      #     echo "${delimiter}" >> ${GITHUB_ENV}
+      #     # echo "result=$(cat ${{ steps.scan.outputs.sarif }} | jq -r '.runs[0].tool.driver.rules[].shortDescription.text')" >> "$GITHUB_ENV"
+      #     # echo result=$(cat ${{ steps.scan.outputs.sarif }} | jq -r '.runs[0].tool.driver.rules[].shortDescription.text') >> $GITHUB_OUTPUT
+      #     # echo $result
  
       - name: Create/Update an issue of vulnerabilities 🛡️ that have been detected
         if: ${{ failure() }}
@@ -66,6 +66,10 @@ jobs:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           debug: true
           script: |
+            const fs = require('fs');
+            const outputs = require(${{ steps.scan.outputs.sarif }})
+            console.log('outputs',outputs)
+
             const { owner, repo } = context.repo;
             const labels = ['security', 'docker-scan', 'Alert : Docker image scan'];
 
