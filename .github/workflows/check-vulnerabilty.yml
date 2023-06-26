@@ -77,7 +77,7 @@ jobs:
               body,
               labels
             });
-
+            console.log(response)
             const reponse = github.rest.issues.createComment({
               issue_number: response.id
               owner, repo,
