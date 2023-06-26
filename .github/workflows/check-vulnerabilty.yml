@@ -66,8 +66,7 @@ jobs:
       
             \`\`\`
                 `;
-            const vulnarableData=jsonData.map((vulnerability) => vulnerability.help.markdown)
-            console.log(vulnarableData)
+            const vulnarableData=jsonData.map((vulnerability) => console.log("vxc", vulnerability))
 
             const issueBody = `Workflow failed for commit ${{github.sha}}.
 
