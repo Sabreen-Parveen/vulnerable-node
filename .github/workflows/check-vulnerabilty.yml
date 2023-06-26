@@ -65,6 +65,14 @@ jobs:
       
             \`\`\`
                 `;
+            
+            const body = `Workflow failed for commit ${{github.sha}}.        
+
+            Following vulnerabilities have been detected :
+            \`\`\`
+             ${data}
+            \`\`\`
+                `;
 
             github.rest.issues.create({
               owner, repo,
@@ -72,4 +80,12 @@ jobs:
               body,
               labels
             });
+
+            console.log(response)
+            github.rest.issues.createComment({
+              issue_number: response.id,
+              owner, repo,
+              body: issueBody
+            });
+
 
