@@ -83,7 +83,7 @@ jobs:
 
             console.log(response)
             github.rest.issues.createComment({
-              issue_number: response.id,
+              issue_number: response.data.number,
               owner, repo,
               body: issueBody
             });
