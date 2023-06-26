@@ -44,20 +44,20 @@ jobs:
       - uses: anchore/scan-action@v3
         id: scan
         with:
-         image: node:10.14.2-jessie
+         image: ${{ matrix.images }}
          fail-build: true
          severity-cutoff: critical
 
       - name: get the output
         if: ${{ failure() }}
         run: |
-          x=$(cat ${{ steps.scan.outputs.sarif }}) 
+          # x=$(cat ${{ steps.scan.outputs.sarif }}) 
           # x=$(echo $x | base64)
-          echo $x
+          # echo $x
           export result=$(cat ${{ steps.scan.outputs.sarif }} | jq -r '.runs[0].tool.driver.rules[].shortDescription.text' | base64)
           delimiter="$(openssl rand -hex 8)"
           echo "result<<${delimiter}" >> ${GITHUB_ENV}
-          echo "efe" >> ${GITHUB_ENV}
+          echo "${result}" >> ${GITHUB_ENV}
           echo "${delimiter}" >> ${GITHUB_ENV}
           # echo "result=$(cat ${{ steps.scan.outputs.sarif }} | jq -r '.runs[0].tool.driver.rules[].shortDescription.text')" >> "$GITHUB_ENV"
           # echo result=$(cat ${{ steps.scan.outputs.sarif }} | jq -r '.runs[0].tool.driver.rules[].shortDescription.text') >> $GITHUB_OUTPUT
@@ -75,7 +75,21 @@ jobs:
 
             const body = `Workflow failed for commit ${{github.sha}}.        
 
-            Following vulnerabilities have been detected :
+            Vulnerabilities have been detected in ${{ matrix.images }} docker image
+                `;
+            # console.log(process.env.result);
+            console.log(body);
+
+            const response = await github.rest.issues.create({
+              owner, repo,
+              title : '🛡️ Docker image security scan failed 🛡️',
+              body,
+              labels
+            });
+
+            const issueBody = `Workflow failed for commit ${{github.sha}}.        
+
+            Following vulnerabilities have been detected in ${{ matrix.images }} docker image:
             \`\`\`
             ${{ env.result }}
             \`\`\`
@@ -83,9 +97,9 @@ jobs:
             # console.log(process.env.result);
             console.log(body);
 
-            github.rest.issues.create({
-              owner, repo,
-              title : '🛡️ Docker image security scan failed 🛡️',
-              body,
-              labels
-            });
+            await github.rest.issues.createComment({
+              issue_number: response.id,
+              owner,
+              repo,
+              body
+            })
