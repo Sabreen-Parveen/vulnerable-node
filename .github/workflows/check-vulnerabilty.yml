@@ -40,7 +40,7 @@ jobs:
       - uses: anchore/scan-action@v3
         id: scan
         with:
-         image: ${{ matrix.images }}
+         image: grafana/promtail:2.2.0
          fail-build: true
          severity-cutoff: critical
          output-format: json
