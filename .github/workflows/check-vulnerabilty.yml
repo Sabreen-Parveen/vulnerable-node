@@ -55,7 +55,7 @@ jobs:
             const data = fs.readFileSync(`${{ steps.scan.outputs.sarif }}`, 'utf8');
             console.log(data)
             const jsonData = JSON.parse(data).runs[0].tool.driver.rules;
-            # console.log(jsonData)
+            console.log(jsonData)
 
             const { owner, repo } = context.repo;
             const labels = ['security', 'docker-scan', 'Alert : Docker image scan'];
@@ -67,10 +67,10 @@ jobs:
       
             \`\`\`
                 `;
-            const vulnerabilityData = jsonData.map(function(data) {
-      
-                return data.help.markdown
-              })
+            # const vulnerabilityData = jsonData.map(function(data) {
+                
+            #     return data.help.markdown
+            #   })
 
             console.log(requiredRes);
             
@@ -78,7 +78,6 @@ jobs:
             const issueBody = `Workflow failed for commit ${{github.sha}}.        
 
             Following vulnerabilities have been detected :
-             ${vulnerabilityData}
                 `;
 
             const response = await github.rest.issues.create({
