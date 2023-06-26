@@ -53,7 +53,6 @@ jobs:
             const fs = require('fs');
           
             const data = fs.readFileSync(`${{ steps.scan.outputs.sarif }}`, 'utf8');
-            console.log(data)
             const jsonData = JSON.parse(data).runs[0].tool.driver.rules;
             console.log(jsonData)
 
