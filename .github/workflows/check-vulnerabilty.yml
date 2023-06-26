@@ -83,7 +83,7 @@ jobs:
               labels
             });
 
-            const issueBody = `Workflow failed for commit ${{github.sha}}.        
+            # const issueBody = `Workflow failed for commit ${{github.sha}}.        
 
             # Following vulnerabilities have been detected in ${{ matrix.images }} docker image:
             # \`\`\`
