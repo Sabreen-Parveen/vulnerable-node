@@ -60,21 +60,15 @@ jobs:
             const { owner, repo } = context.repo;
             const labels = ['security', 'docker-scan', 'Alert : Docker image scan'];
 
-            const body = `Workflow failed for commit ${{github.sha}}.        
+            const body = `Workflow failed for commit ${{github.sha}}.
 
             Following vulnerabilities have been detected :
             \`\`\`
       
             \`\`\`
                 `;
-            # const vulnerabilityData = jsonData.map(function(data) {
-                
-            #     return data.help.markdown
-            #   })
 
-            
-            
-            const issueBody = `Workflow failed for commit ${{github.sha}}.        
+            const issueBody = `Workflow failed for commit ${{github.sha}}.
 
             Following vulnerabilities have been detected :
                 `;
