@@ -53,7 +53,7 @@ jobs:
             const fs = require('fs');
           
             const data = fs.readFileSync(`${{ steps.scan.outputs.sarif }}`, 'utf8');
-            const jsonData = JSON.parse(data);
+            const jsonData = JSON.parse(data).runs[0].tool.driver;
             console.log(jsonData)
 
             const { owner, repo } = context.repo;
@@ -66,11 +66,18 @@ jobs:
       
             \`\`\`
                 `;
+            const vulnerabilityData = jsonData.map(function(data) {
+      
+                return data.help.markdown
+              })
+
+            console.log(requiredRes);
+            
             
             const issueBody = `Workflow failed for commit ${{github.sha}}.        
 
             Following vulnerabilities have been detected :
-             ${jsonData.runs[0].tool.driver.rules[0].help.markdown}
+             ${vulnerabilityData}
                 `;
 
             const response = await github.rest.issues.create({
