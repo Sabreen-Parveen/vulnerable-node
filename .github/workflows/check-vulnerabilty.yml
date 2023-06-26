@@ -81,7 +81,6 @@ jobs:
             const reponse = github.rest.issues.createComment({
               issue_number: response.id
               owner, repo,
-              title : '🛡️ Docker image security scan failed 🛡️',
               body: issueBody
             });
 
