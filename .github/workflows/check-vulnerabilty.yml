@@ -53,7 +53,7 @@ jobs:
             const fs = require('fs');
           
             const data = fs.readFileSync(`${{ steps.scan.outputs.sarif }}`, 'utf8');
-            const jsonData = JSON.parse(data).runs[0].tool.driver;
+            const jsonData = JSON.parse(data).runs[0].tool.driver.rules;
             console.log(jsonData)
 
             const { owner, repo } = context.repo;
