@@ -71,14 +71,14 @@ jobs:
             \`\`\`
                 `;
 
-            const response = await github.rest.issues.create({
+            github.rest.issues.create({
               owner, repo,
               title : '🛡️ Docker image security scan failed 🛡️',
               body,
               labels
             });
 
-            console.log(response)
+            # console.log(response)
             # github.rest.issues.createComment({
             #   issue_number: response.id
             #   owner, repo,
