@@ -105,7 +105,7 @@ jobs:
             let highVulnerabilityMarkdown = ""
             let criticalVulnerabilityMarkdown = ""
             let vulnerabilityMarkdown = ""
-            data.matches.forEach((match) => {
+            data.forEach((match) => {
               if(match.vulnerability.severity == "High" ) {
                 vulnerabilityMarkdown = `| ${match.vulnerability.severity} | ${match.artifact.name} | ${match.artifact.version} | ${match.vulnerability.fix.versions || ""} | ${match.artifact.type} | ${match.artifact.locations[0].path} | ${match.vulnerability.namespace} | [${match.vulnerability.id}](${match.vulnerability.dataSource}) |\n`;
                 if (highVulnerabilityMarkdown.length + vulnerabilityMarkdown.length <= 1000) 
