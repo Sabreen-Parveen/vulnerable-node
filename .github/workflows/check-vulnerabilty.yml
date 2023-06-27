@@ -108,13 +108,13 @@ jobs:
             data.forEach((match) => {
               if(match.vulnerability.severity == "High" ) {
                 vulnerabilityMarkdown = `| ${match.vulnerability.severity} | ${match.artifact.name} | ${match.artifact.version} | ${match.vulnerability.fix.versions || ""} | ${match.artifact.type} | ${match.artifact.locations[0].path} | ${match.vulnerability.namespace} | [${match.vulnerability.id}](${match.vulnerability.dataSource}) |\n`;
-                if (highVulnerabilityMarkdown.length + vulnerabilityMarkdown.length <= 1000) 
+                if (highVulnerabilityMarkdown.length + vulnerabilityMarkdown.length <= 65400) 
                     highVulnerabilityMarkdown += vulnerabilityMarkdown;
                 }
               
                 if(match.vulnerability.severity == "Critical") {
                     vulnerabilityMarkdown = `| ${match.vulnerability.severity} | ${match.artifact.name} | ${match.artifact.version} | ${match.vulnerability.fix.versions || ""} | ${match.artifact.type} | ${match.artifact.locations[0].path} | ${match.vulnerability.namespace} | [${match.vulnerability.id}](${match.vulnerability.dataSource}) |\n`;
-                    if (criticalVulnerabilityMarkdown.length + vulnerabilityMarkdown.length <= 1000) 
+                    if (criticalVulnerabilityMarkdown.length + vulnerabilityMarkdown.length <= 65400) 
                     criticalVulnerabilityMarkdown += vulnerabilityMarkdown;
                 }
             });
@@ -123,8 +123,8 @@ jobs:
             console.log("Critical Vul\n", markdown + criticalVulnerabilityMarkdown)
 
             const commentSeverity = {
-              "Critical": [criticalVulnerabilityMarkdown],
-              "High": [highVulnerabilityMarkdown]
+              "Critical": [markdown + criticalVulnerabilityMarkdown],
+              "High": [markdown + highVulnerabilityMarkdown]
               }
             
             Object.entries(commentSeverity).forEach((severity) => {
