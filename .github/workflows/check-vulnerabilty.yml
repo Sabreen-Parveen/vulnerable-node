@@ -45,12 +45,12 @@ jobs:
          severity-cutoff: critical
          output-format: json
          registry-username: ${{ github.repository_owner }}
-         registry-password: ${{ secrets.GITHUB_TOKEN }}
+         registry-password: ${{ env.container }}
       - name: Create/Update an issue of vulnerabilities 🛡️ that have been detected
         if: ${{ failure() }}
         uses: actions/github-script@v6
         with:
-          github-token: ${{ secrets.container }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
           debug: true
           script: |
             const fs = require('fs');
