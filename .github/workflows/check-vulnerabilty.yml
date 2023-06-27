@@ -122,13 +122,17 @@ jobs:
             console.log("High Vul\n", markdown + highVulnerabilityMarkdown)
             console.log("Critical Vul\n", markdown + criticalVulnerabilityMarkdown)
 
-            const commentSeverity = ["critical", "high"]
-            commentSeverity.forEach((severity) => {
-              let severityData = severity + "VulnerabilityMarkdown";
+            const commentSeverity = {
+              "Critical": [criticalVulnerabilityMarkdown],
+              "High": [highVulnerabilityMarkdown]
+              }
+            
+            Object.entries(commentSeverity).forEach((severity) => {
+              const [severityKey, severityValue] = severity
               const commentBody = `Workflow failed for commit ${{github.sha}}.
 
-            Following ${severity} vulnerabilities have been detected :
-                  ${severityData}
+            Following ${severityKey} vulnerabilities have been detected :
+                  ${severityValue}
                 `;
                 github.rest.issues.createComment({
                   issue_number: response.data.number,
