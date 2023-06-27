@@ -44,6 +44,23 @@ jobs:
          fail-build: true
          severity-cutoff: critical
          output-format: json
+
+      # - name: get the output
+      #   if: ${{ failure() }}
+      #   run: |
+      #     # x=$(cat ${{ steps.scan.outputs.json }} | jq  '.matches[].vulnerability.severity' | sort | uniq -c)
+      #     # x=$(echo $x | base64)
+      #     echo "Let us see the output"
+      #     echo $(cat ${{ steps.scan.outputs.sarif }})
+      #     export result=$(cat ${{ steps.scan.outputs.sarif }} | jq -r '.runs[0].tool.driver.rules[].shortDescription.text')
+      #     delimiter="$(openssl rand -hex 8)"
+      #     echo "result<<${delimiter}" >> ${GITHUB_ENV}
+      #     echo "${result}" >> ${GITHUB_ENV}
+      #     echo "${delimiter}" >> ${GITHUB_ENV}
+      #     # echo "result=$(cat ${{ steps.scan.outputs.sarif }} | jq -r '.runs[0].tool.driver.rules[].shortDescription.text')" >> "$GITHUB_ENV"
+      #     # echo result=$(cat ${{ steps.scan.outputs.sarif }} | jq -r '.runs[0].tool.driver.rules[].shortDescription.text') >> $GITHUB_OUTPUT
+      #     # echo $result
+     
       - name: Create/Update an issue of vulnerabilities 🛡️ that have been detected
         if: ${{ failure() }}
         uses: actions/github-script@v6
@@ -59,12 +76,32 @@ jobs:
             const { owner, repo } = context.repo;
             const labels = ['security', 'docker-scan', 'Alert : Docker image scan'];
 
-            const body = `Workflow failed for commit ${{github.sha}}.
+            const vulnerabilities = data.map(item => item.vulnerability);
 
-            Following vulnerabilities have been detected :
-            \`\`\`
-      
-            \`\`\`
+            // Extracting severities
+            const severities = vulnerabilities.map(item => item.severity);
+
+            // Counting the occurrences of each severity level
+            const countBySeverity = severities.reduce((acc, severity) => {
+              acc[severity] = (acc[severity] || 0) + 1;
+              return acc;
+            }, {});
+
+            console.log("Count by Severity:", countBySeverity);
+
+            let markdown = "| Image | Low | High | Medium | Critical | Scan Location |\n";
+            markdown += "| --- | --- | --- | --- | --- | --- |\n";
+            markdown += `| ${{ matrix.images }} |`;
+            for (const severity of ["Low", "High", "Medium", "Critical"]) {
+              markdown += ` ${countBySeverity[severity] || 0} |`;
+            }
+            markdown += " [CVE-2017-11671](https://security-tracker.debian.org/tracker/CVE-2017-11671) |\n";
+
+            console.log(markdown);
+
+            const body = `Workflow failed for commit ${{github.sha}}.
+            Detected vulnerabilities in \`${{ matrix.images }}\` docker image.
+            ${markdown}
                 `;
             
             const issueBody = `Workflow failed for commit ${{github.sha}}.
