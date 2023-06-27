@@ -71,6 +71,7 @@ jobs:
             const fs = require('fs');
           
             let data = fs.readFileSync(`${{ steps.scan.outputs.json }}`, 'utf8');
+            data = JSON.parse(data)
             console.log(typeof(data))
             data = data.matches;
 
