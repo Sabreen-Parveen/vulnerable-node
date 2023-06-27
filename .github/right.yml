@@ -81,7 +81,7 @@ jobs:
             for (const severity of ["Low", "High", "Medium", "Critical"]) {
               markdown += ` ${countBySeverity[severity] || 0} |`;
             }
-            markdown += " [CVE-2017-11671](https://security-tracker.debian.org/tracker/CVE-2017-11671) |\n";
+            markdown += ` [${{ github.run_id }}](https://github.com/${owner}/${repo}/actions/runs/${{ github.run_id }}) |\n`;
 
             console.log(markdown);
 
@@ -90,23 +90,55 @@ jobs:
             ${markdown}
                 `;
             
-            const issueBody = `Workflow failed for commit ${{github.sha}}.
-
-            Following vulnerabilities have been detected :
-                `;
-
-            const response = await github.rest.issues.create({
+             const response = await github.rest.issues.create({
               owner, repo,
               title : '🛡️ Docker image security scan failed 🛡️',
               body,
               labels
             });
 
-            console.log(response)
-            github.rest.issues.createComment({
-              issue_number: response.data.number,
-              owner, repo,
-              body: issueBody
+            markdown = "";
+
+            // Table headers
+            markdown += "| Severity | Package | Version | Fix Version | Type | Location | Data Namespace | Link |\n";
+            markdown += "| --- | --- | --- | --- | --- | --- | --- | --- |\n";
+            let highVulnerabilityMarkdown = ""
+            let criticalVulnerabilityMarkdown = ""
+            let vulnerabilityMarkdown = ""
+            data.forEach((match) => {
+              if(match.vulnerability.severity == "High" ) {
+                vulnerabilityMarkdown = `| ${match.vulnerability.severity} | ${match.artifact.name} | ${match.artifact.version} | ${match.vulnerability.fix.versions || ""} | ${match.artifact.type} | ${match.artifact.locations[0].path} | ${match.vulnerability.namespace} | [${match.vulnerability.id}](${match.vulnerability.dataSource}) |\n`;
+                if (highVulnerabilityMarkdown.length + vulnerabilityMarkdown.length <= 65400) 
+                    highVulnerabilityMarkdown += vulnerabilityMarkdown;
+                }
+              
+                if(match.vulnerability.severity == "Critical") {
+                    vulnerabilityMarkdown = `| ${match.vulnerability.severity} | ${match.artifact.name} | ${match.artifact.version} | ${match.vulnerability.fix.versions || ""} | ${match.artifact.type} | ${match.artifact.locations[0].path} | ${match.vulnerability.namespace} | [${match.vulnerability.id}](${match.vulnerability.dataSource}) |\n`;
+                    if (criticalVulnerabilityMarkdown.length + vulnerabilityMarkdown.length <= 65400) 
+                    criticalVulnerabilityMarkdown += vulnerabilityMarkdown;
+                }
             });
+
+            console.log("High Vul\n", markdown + highVulnerabilityMarkdown)
+            console.log("Critical Vul\n", markdown + criticalVulnerabilityMarkdown)
+
+            const commentSeverity = {
+              "Critical": [markdown + criticalVulnerabilityMarkdown],
+              "High": [markdown + highVulnerabilityMarkdown]
+              }
+            
+            Object.entries(commentSeverity).forEach((severity) => {
+              const [severityKey, severityValue] = severity
+              const commentBody = `Workflow failed for commit ${{github.sha}}.
+
+            Following ${severityKey} vulnerabilities have been detected :
+                  ${severityValue}
+                `;
+                github.rest.issues.createComment({
+                  issue_number: response.data.number,
+                  owner, repo,
+                  body: commentBody
+                });
+            })            
 
 
