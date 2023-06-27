@@ -71,7 +71,7 @@ jobs:
             const fs = require('fs');
           
             let data = fs.readFileSync(`${{ steps.scan.outputs.json }}`, 'utf8');
-            console.log(data)
+            console.log(typeof(data))
             data = data.matches;
 
             const { owner, repo } = context.repo;
