@@ -44,8 +44,6 @@ jobs:
          fail-build: true
          severity-cutoff: critical
          output-format: json
-        #  registry-username: ${{ github.repository_owner }}
-        #  registry-password: ${{ secrets.container }}
       - name: Create/Update an issue of vulnerabilities 🛡️ that have been detected
         if: ${{ failure() }}
         uses: actions/github-script@v6
