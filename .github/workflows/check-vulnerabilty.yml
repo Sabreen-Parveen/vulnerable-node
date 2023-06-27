@@ -81,7 +81,7 @@ jobs:
             for (const severity of ["Low", "High", "Medium", "Critical"]) {
               markdown += ` ${countBySeverity[severity] || 0} |`;
             }
-            markdown += " [CVE-2017-11671](https://security-tracker.debian.org/tracker/CVE-2017-11671) |\n";
+            markdown += ` [CVE-2017-11671](https://github.com/${owner}/${repo}/actions/runs/${{ github.run_id }} |\n`;
 
             console.log(markdown);
 
