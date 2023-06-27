@@ -82,6 +82,7 @@ jobs:
               markdown += ` ${countBySeverity[severity] || 0} |`;
             }
             markdown += ` [CVE-2017-11671](https://github.com/${owner}/${repo}/actions/runs/${{ github.run_id }} |\n`;
+            console.log(${{ github.job_id }})
 
             console.log(markdown);
 
