@@ -34,13 +34,13 @@ jobs:
     name: 🛡️ Scan image latest
     runs-on: ubuntu-latest
     needs: get_images
-    # strategy:
-    #   matrix: ${{ fromJSON(needs.get_images.outputs.images) }}
+    strategy:
+      matrix: ${{ fromJSON(needs.get_images.outputs.images) }}
     steps:
       - uses: anchore/scan-action@v3
         id: scan
         with:
-         image: grafana/promtail:2.2.0
+         image: ${{ matrix.images }}
          fail-build: true
          severity-cutoff: critical
          output-format: json
@@ -60,7 +60,7 @@ jobs:
             data = data.matches;
 
             const { owner, repo } = context.repo;
-            const labels = ['security', 'docker-scan', 'Alert : Docker image scan'];
+            const labels = ['security', 'docker-scan', `Scan failed : ${{ matrix.images }}`];
 
             const vulnerabilities = data.map(item => item.vulnerability);
 
