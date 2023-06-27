@@ -31,7 +31,7 @@ jobs:
   #       run: echo "${{ toJSON(needs.get_images.outputs.images) }}"
 
   scan:
-    name: 🛡️ Scan image latest
+    name: 🛡️ Scan docker images
     runs-on: ubuntu-latest
     needs: get_images
     strategy:
@@ -44,7 +44,8 @@ jobs:
          fail-build: true
          severity-cutoff: critical
          output-format: json
-
+         registry-username: ${{ github.repository_owner }}
+         registry-password: ${{ secrets.GITHUB_TOKEN }}
       - name: Create/Update an issue of vulnerabilities 🛡️ that have been detected
         if: ${{ failure() }}
         uses: actions/github-script@v6
