@@ -51,6 +51,7 @@ jobs:
          fail-build: true
          severity-cutoff: critical
          output-format: json
+         registry: ghcr.io
          registry-username: sabreen-parveen
          registry-password: ${{ secrets.GITHUB_TOKEN }}
 
