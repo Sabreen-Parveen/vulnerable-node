@@ -64,6 +64,7 @@ jobs:
       #    severity-cutoff: critical
       #    output-format: json
       - name: echo
+        if: ${{ failure() }}
         run: |
           echo $GRYPE_REGISTRY_AUTH_USERNAME
       - name: Create/Update an issue of vulnerabilities 🛡️ that have been detected
