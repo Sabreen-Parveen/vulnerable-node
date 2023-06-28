@@ -37,7 +37,21 @@ jobs:
     strategy:
       matrix: ${{ fromJSON(needs.get_images.outputs.images) }}
     steps:
-      - uses: anchore/scan-action@v3
+      - name: scan ghcr images
+        uses: anchore/scan-action@v3
+        if: ${{ startsWith( matrix.images, 'ghcr.io' ) }}
+        id: scan
+        with:
+         image: ${{ matrix.images }}
+         fail-build: true
+         severity-cutoff: critical
+         output-format: json
+         registry-username: sabreen-parveen
+         registry-password: $${{ secrets.GITHUB_TOKEN }}
+
+      - name: scan docker hub images
+        uses: anchore/scan-action@v3
+        if: ${{ !startsWith( matrix.images, 'ghcr.io' ) }}
         id: scan
         with:
          image: ${{ matrix.images }}
