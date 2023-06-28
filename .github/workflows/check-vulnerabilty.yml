@@ -36,7 +36,7 @@ jobs:
     permissions:
       packages: read
       contents: read
-      issues: read|write
+      issues: read | write
     needs: get_images
     strategy:
       fail-fast: false
