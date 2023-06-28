@@ -63,6 +63,9 @@ jobs:
       #    fail-build: true
       #    severity-cutoff: critical
       #    output-format: json
+      - name: echo
+        run: |
+          echo $GRYPE_REGISTRY_AUTH_USERNAME
       - name: Create/Update an issue of vulnerabilities 🛡️ that have been detected
         if: ${{ failure() }}
         uses: actions/github-script@v6
