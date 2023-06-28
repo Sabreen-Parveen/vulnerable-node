@@ -43,7 +43,7 @@ jobs:
       matrix: ${{ fromJSON(needs.get_images.outputs.images) }}
     steps:
       - name: scan ghcr images
-        uses: anchore/scan-action@v2
+        uses: anchore/scan-action@v1
         if: ${{ startsWith( matrix.images, 'ghcr.io' ) }}
         id: scan-ghcr
         with:
