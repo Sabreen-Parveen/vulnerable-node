@@ -34,7 +34,7 @@ jobs:
     name: 🛡️ Scan docker images
     runs-on: ubuntu-latest
     permissions:
-      packages: read
+      packages: write
       contents: read
       issues: write
     needs: get_images
