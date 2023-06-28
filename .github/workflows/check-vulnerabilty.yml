@@ -33,6 +33,9 @@ jobs:
   scan:
     name: 🛡️ Scan docker images
     runs-on: ubuntu-latest
+    permissions:
+      packages: read
+      contents: read
     needs: get_images
     strategy:
       fail-fast: false
