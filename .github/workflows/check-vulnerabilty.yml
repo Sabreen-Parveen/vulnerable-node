@@ -48,7 +48,7 @@ jobs:
          severity-cutoff: critical
          output-format: json
          registry-username: sabreen-parveen
-         registry-password: $${{ secrets.GITHUB_TOKEN }}
+         registry-password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: scan docker hub images
         uses: anchore/scan-action@v3
