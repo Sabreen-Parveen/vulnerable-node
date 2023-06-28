@@ -67,7 +67,9 @@ jobs:
           debug: true
           script: |
             const fs = require('fs');
-          
+            console.log(${{ steps.scan-ghcr.outputs.json }});
+            console.log(${{ steps.scan.outputs.json) }};
+            console.log(${{ steps.scan-ghcr.outputs.json || steps.scan.outputs.json}})
             let data = fs.readFileSync(`${{ steps.scan-ghcr.outputs.json || steps.scan.outputs.json}} `, 'utf8');
             data = JSON.parse(data)
             console.log(typeof(data))
