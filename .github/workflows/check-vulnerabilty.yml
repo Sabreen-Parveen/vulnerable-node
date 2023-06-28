@@ -40,7 +40,7 @@ jobs:
       - name: scan ghcr images
         uses: anchore/scan-action@v3
         if: ${{ startsWith( matrix.images, 'ghcr.io' ) }}
-        id: scan
+        id: scan-ghcr
         with:
          image: ${{ matrix.images }}
          fail-build: true
@@ -67,7 +67,7 @@ jobs:
           script: |
             const fs = require('fs');
           
-            let data = fs.readFileSync(`${{ steps.scan.outputs.json }}`, 'utf8');
+            let data = fs.readFileSync(`${{ steps.scan-ghcr.outputs.json || steps.scan.outputs.json}} `, 'utf8');
             data = JSON.parse(data)
             console.log(typeof(data))
             data = data.matches;
