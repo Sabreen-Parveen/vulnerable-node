@@ -94,7 +94,7 @@ jobs:
             // const result1 = string1.match(regex)?.[1];
             const label = '${{ matrix.images }}'.match(regex)?.[1];
 
-            console.log(result1); 
+            // console.log(result1); 
             const labels = ['security', 'docker scan failed'];
 
             const vulnerabilities = data.map(item => item.vulnerability);
