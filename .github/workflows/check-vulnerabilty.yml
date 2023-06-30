@@ -5,7 +5,7 @@ on:
     branches:
       - master
   schedule:
-    - cron:  '* * * * *'
+    - cron:  '*/5 * * * *'
 
 jobs:
   get_images:
@@ -117,11 +117,6 @@ jobs:
 
             console.log("High Vul\n", commentMarkdown + highVulnerabilityMarkdown)
             console.log("Critical Vul\n", markdown + criticalVulnerabilityMarkdown)
-
-            const commentSeverity = {
-              "Critical": [commentMarkdown + criticalVulnerabilityMarkdown],
-              "High": [commentMarkdown + highVulnerabilityMarkdown]
-              }
             
             const existingIssue = (await github.paginate(github.rest.issues.listForRepo.endpoint.merge({
               owner, repo, state: 'open',labels
@@ -142,12 +137,10 @@ jobs:
                 labels
             });
 
-            Object.entries(commentSeverity).forEach((severity) => {
-              const [severityKey, severityValue] = severity
-              const commentBody = `${ github.sha ? 'Workflow failed for commit' + github.sha : ''}
+            const commentBody = `${ github.sha ? 'Workflow failed for commit' + github.sha : ''}
 
-            Following ${severityKey} vulnerabilities have been detected :
-                  ${severityValue}
+            Following Critical vulnerabilities have been detected :
+                  ${criticalVulnerabilityMarkdown}
                 `;
                 github.rest.issues.createComment({
                   issue_number: response.data.number,
@@ -155,6 +148,4 @@ jobs:
                   body: commentBody
                 });
             })         
-
-            }   
 
