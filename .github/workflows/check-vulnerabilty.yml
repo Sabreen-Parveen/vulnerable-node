@@ -5,7 +5,7 @@ on:
     branches:
       - master
   schedule:
-    - cron:  '*/5 * * * *'
+    - cron:  '*/10 * * * *'
 
 jobs:
   get_images:
@@ -122,7 +122,7 @@ jobs:
               owner, repo, state: 'open',labels
             }))).filter(i => i.title.indexOf('Docker image security scan') !== -1)[0];
 
-            const body = `${ github.sha ? 'Workflow failed for commit' + github.sha : ''}
+            const body = `${{ github.sha ? 'Workflow failed for commit' + github.sha : ''}}
             Detected vulnerabilities in \`${{ matrix.images }}\` docker image.
             ${markdown}
                 `;
