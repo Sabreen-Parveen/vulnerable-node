@@ -115,8 +115,10 @@ jobs:
                 }
             });
 
+            criticalVulnerabilityMarkdown = commentMarkdown + criticalVulnerabilityMarkdown
+
             console.log("High Vul\n", commentMarkdown + highVulnerabilityMarkdown)
-            console.log("Critical Vul\n", markdown + criticalVulnerabilityMarkdown)
+            console.log("Critical Vul\n", criticalVulnerabilityMarkdown)
             
             const existingIssue = (await github.paginate(github.rest.issues.listForRepo.endpoint.merge({
               owner, repo, state: 'open',labels
@@ -140,7 +142,7 @@ jobs:
               const commentBody = `Workflow failed for commit ${{github.sha}}.
 
             Following Critical vulnerabilities have been detected :
-                  ${markdown + criticalVulnerabilityMarkdown}
+                  ${criticalVulnerabilityMarkdown}
                 `;
                 github.rest.issues.createComment({
                   issue_number: response.data.number,
