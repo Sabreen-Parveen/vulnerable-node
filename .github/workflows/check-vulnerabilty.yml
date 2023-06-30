@@ -89,7 +89,7 @@ jobs:
 
             const { owner, repo } = context.repo;
           
-           
+            const string1 = 'ghcr.io/sabreen-parveen/vulnerable-esfkjdsvnhjd:latest';
             const regex = /\/([^/]+)$/;
             const result1 = string1.match(regex)?.[1];
 
