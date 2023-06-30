@@ -90,7 +90,7 @@ jobs:
             const { owner, repo } = context.repo;
           
             
-            const labels = ['security', 'docker scan failed', ${{ matrix.images}}];
+            const labels = ['security', 'docker scan failed', `${{ matrix.images}}`];
 
             const vulnerabilities = data.map(item => item.vulnerability);
 
