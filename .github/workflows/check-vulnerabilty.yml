@@ -139,8 +139,8 @@ jobs:
 
               const commentBody = `Workflow failed for commit ${{github.sha}}.
 
-            Following ${severityKey} vulnerabilities have been detected :
-                  ${severityValue}
+            Following Critical vulnerabilities have been detected :
+                  ${criticalVulnerabilityMarkdown}
                 `;
                 github.rest.issues.createComment({
                   issue_number: response.data.number,
