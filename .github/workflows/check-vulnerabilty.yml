@@ -89,7 +89,11 @@ jobs:
 
             const { owner, repo } = context.repo;
             const regex = /\/([^/]+)$/;
-            const labels = ['security', 'docker scan failed', ${{ matrix.images.match(regex)?.[1] }}];
+            const result1 = string1.match(regex)?.[1];
+
+            console.log(result1); 
+            
+            const labels = ['security', 'docker scan failed', ${{ matrix.images}}];
 
             const vulnerabilities = data.map(item => item.vulnerability);
 
