@@ -137,6 +137,7 @@ jobs:
                 body,
                 labels
             });
+          }
 
             const commentBody = `${ github.sha ? 'Workflow failed for commit' + github.sha : ''}
 
@@ -148,5 +149,3 @@ jobs:
                   owner, repo,
                   body: commentBody
                 });
-            })         
-
