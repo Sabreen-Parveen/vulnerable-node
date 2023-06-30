@@ -136,8 +136,8 @@ jobs:
                 title : '🛡️ Docker image security scan failed 🛡️',
                 body,
                 labels
-            });
-          }
+              });
+            }
 
             const commentBody = `${ github.sha ? 'Workflow failed for commit' + github.sha : ''}
 
