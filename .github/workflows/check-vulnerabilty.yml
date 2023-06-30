@@ -92,6 +92,7 @@ jobs:
             const string1 = 'ghcr.io/sabreen-parveen/vulnerable-esfkjdsvnhjd:latest';
             const regex = /\/([^/]+)$/;
             const result1 = string1.match(regex)?.[1];
+            const label = ${{ matrix.images.match(regex)?.[1] }}
 
             console.log(result1); 
             const labels = ['security', 'docker scan failed', `${{ matrix.images }}`];
