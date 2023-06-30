@@ -31,20 +31,43 @@ jobs:
   #       run: echo "${{ toJSON(needs.get_images.outputs.images) }}"
 
   scan:
-    name: 🛡️ Scan image latest
+    name: 🛡️ Scan docker images
     runs-on: ubuntu-latest
+    permissions:
+      packages: write
+      contents: read
+      issues: write
     needs: get_images
-    # strategy:
-    #   matrix: ${{ fromJSON(needs.get_images.outputs.images) }}
+    strategy:
+      fail-fast: false
+      matrix: ${{ fromJSON(needs.get_images.outputs.images) }}
     steps:
-      - uses: anchore/scan-action@v3
-        id: scan
+      - name: scan ghcr images
+        uses: anchore/scan-action@v3
+        if: ${{ startsWith( matrix.images, 'ghcr.io' ) }}
+        id: scan-ghcr
         with:
-         image: grafana/promtail:2.2.0
+         image: ${{ matrix.images }}
          fail-build: true
          severity-cutoff: critical
          output-format: json
+         registry-username: 'sabreen-parveen'
+         registry-password: ${{ secrets.GITHUB_TOKEN }}
 
+      - name: scan docker hub images
+        uses: anchore/scan-action@v3
+        if: ${{ !startsWith( matrix.images, 'ghcr.io' ) }}
+        id: scan
+        with:
+         image: ${{ matrix.images }}
+         fail-build: true
+         severity-cutoff: critical
+         output-format: json
+      # - name: echo
+      #   if: ${{ failure() }}
+      #   run: |
+      #     echo $GRYPE_REGISTRY_AUTH_USERNAME
+      #     echo 
       - name: Create/Update an issue of vulnerabilities 🛡️ that have been detected
         if: ${{ failure() }}
         uses: actions/github-script@v6
@@ -53,14 +76,14 @@ jobs:
           debug: true
           script: |
             const fs = require('fs');
-          
-            let data = fs.readFileSync(`${{ steps.scan.outputs.json }}`, 'utf8');
+            console.log(${{ env.GRYPE_REGISTRY_AUTH_USERNAME }})
+            let data = fs.readFileSync(`${{ steps.scan-ghcr.outputs.json || steps.scan.outputs.json }}`, 'utf8');
             data = JSON.parse(data)
             console.log(typeof(data))
             data = data.matches;
 
             const { owner, repo } = context.repo;
-            const labels = ['security', 'docker-scan', 'Alert : Docker image scan'];
+            const labels = ['security', 'docker-scan', `Scan failed : ${{ matrix.images }}`];
 
             const vulnerabilities = data.map(item => item.vulnerability);
 
@@ -85,23 +108,11 @@ jobs:
 
             console.log(markdown);
 
-            const body = `Workflow failed for commit ${{github.sha}}.
-            Detected vulnerabilities in \`${{ matrix.images }}\` docker image.
-            ${markdown}
-                `;
-            
-             const response = await github.rest.issues.create({
-              owner, repo,
-              title : '🛡️ Docker image security scan failed 🛡️',
-              body,
-              labels
-            });
-
-            markdown = "";
+            let commentMarkdown = "";
 
             // Table headers
-            markdown += "| Severity | Package | Version | Fix Version | Type | Location | Data Namespace | Link |\n";
-            markdown += "| --- | --- | --- | --- | --- | --- | --- | --- |\n";
+            commentMarkdown += "| Severity | Package | Version | Fix Version | Type | Location | Data Namespace | Link |\n";
+            commentMarkdown += "| --- | --- | --- | --- | --- | --- | --- | --- |\n";
             let highVulnerabilityMarkdown = ""
             let criticalVulnerabilityMarkdown = ""
             let vulnerabilityMarkdown = ""
@@ -119,14 +130,33 @@ jobs:
                 }
             });
 
-            console.log("High Vul\n", markdown + highVulnerabilityMarkdown)
+            console.log("High Vul\n", commentMarkdown + highVulnerabilityMarkdown)
             console.log("Critical Vul\n", markdown + criticalVulnerabilityMarkdown)
 
             const commentSeverity = {
-              "Critical": [markdown + criticalVulnerabilityMarkdown],
-              "High": [markdown + highVulnerabilityMarkdown]
+              "Critical": [commentMarkdown + criticalVulnerabilityMarkdown],
+              "High": [commentMarkdown + highVulnerabilityMarkdown]
               }
             
+            const existingIssue = (await github.paginate(github.rest.issues.listForRepo.endpoint.merge({
+              owner, repo, state: 'open',labels
+            }))).filter(i => i.title.indexOf('Docker image security scan') !== -1)[0];
+
+            const body = `Workflow failed for commit ${{github.sha}}.
+            Detected vulnerabilities in \`${{ matrix.images }}\` docker image.
+            ${markdown}
+                `;
+        
+            if (existingIssue) {
+              github.rest.issues.update({ owner, repo, issue_number: existingIssue.number, body });
+            } else {
+              const response = await github.rest.issues.create({
+                owner, repo,
+                title : '🛡️ Docker image security scan failed 🛡️',
+                body,
+                labels
+            });
+
             Object.entries(commentSeverity).forEach((severity) => {
               const [severityKey, severityValue] = severity
               const commentBody = `Workflow failed for commit ${{github.sha}}.
@@ -139,6 +169,7 @@ jobs:
                   owner, repo,
                   body: commentBody
                 });
-            })            
+            })         
 
+            }   
 
