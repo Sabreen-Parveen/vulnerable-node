@@ -93,7 +93,7 @@ jobs:
             const regex = /\/([^/]+)$/;
             const result1 = string1.match(regex)?.[1];
             console.log(typeof(${{ matrix.images }}))
-            const label = '${{ matrix.images }}'.match(regex)?.[1];
+            const label = toString(${{ matrix.images }}).match(regex)?.[1];
 
             console.log(result1); 
             const labels = ['security', 'docker scan failed', label];
