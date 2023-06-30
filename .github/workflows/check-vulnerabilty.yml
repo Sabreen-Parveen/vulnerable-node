@@ -4,8 +4,8 @@ on:
   push:
     branches:
       - master
-  schedule:
-    - cron:  '*/10 * * * *'
+  # schedule:
+  #   - cron:  '*/10 * * * *'
 
 jobs:
   get_images:
@@ -82,7 +82,7 @@ jobs:
           debug: true
           script: |
             const fs = require('fs');
-            let data = fs.readFileSync(`${{  steps.scan.outputs.json }}`, 'utf8');
+            let data = fs.readFileSync(`${{  steps.scan.outputs.json || steps.scan-ghcr.outputs.json }}`, 'utf8');
             data = JSON.parse(data)
             console.log(typeof(data))
             data = data.matches;
