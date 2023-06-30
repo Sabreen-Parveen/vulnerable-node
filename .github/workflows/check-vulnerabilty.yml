@@ -42,31 +42,16 @@ jobs:
       fail-fast: false
       matrix: ${{ fromJSON(needs.get_images.outputs.images) }}
     steps:
-      - name: scan ghcr images
+      - name: scan docker hub images
         uses: anchore/scan-action@v3
-        if: ${{ startsWith( matrix.images, 'ghcr.io' ) }}
-        id: scan-ghcr
+        if: ${{ !startsWith( matrix.images, 'ghcr.io' ) }}
+        id: scan
         with:
          image: ${{ matrix.images }}
          fail-build: true
          severity-cutoff: critical
          output-format: json
-         registry-username: 'sabreen-parveen'
-         registry-password: ${{ secrets.GITHUB_TOKEN }}
-
-      # - name: scan docker hub images
-      #   uses: anchore/scan-action@v3
-      #   if: ${{ !startsWith( matrix.images, 'ghcr.io' ) }}
-      #   id: scan
-      #   with:
-      #    image: ${{ matrix.images }}
-      #    fail-build: true
-      #    severity-cutoff: critical
-      #    output-format: json
-      - name: echo
-        if: ${{ failure() }}
-        run: |
-          echo $GRYPE_REGISTRY_AUTH_USERNAME
+     
       - name: Create/Update an issue of vulnerabilities 🛡️ that have been detected
         if: ${{ failure() }}
         uses: actions/github-script@v6
@@ -75,8 +60,7 @@ jobs:
           debug: true
           script: |
             const fs = require('fs');
-            console.log(${{ env.GRYPE_REGISTRY_AUTH_USERNAME }})
-            let data = fs.readFileSync(`${{ steps.scan-ghcr.outputs.json || steps.scan.outputs.json }}`, 'utf8');
+            let data = fs.readFileSync(`${{ steps.scan.outputs.json }}`, 'utf8');
             data = JSON.parse(data)
             console.log(typeof(data))
             data = data.matches;
