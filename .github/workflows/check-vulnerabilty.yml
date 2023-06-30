@@ -121,7 +121,8 @@ jobs:
             const existingIssue = (await github.paginate(github.rest.issues.listForRepo.endpoint.merge({
               owner, repo, state: 'open',labels
             }))).filter(i => i.title.indexOf('Docker image security scan') !== -1)[0];
-
+            const body = "";
+            if( ${{github.sha}} )
             const body = `Workflow failed for commit ${{github.sha}}.
             Detected vulnerabilities in \`${{ matrix.images }}\` docker image.
             ${markdown}
@@ -140,7 +141,7 @@ jobs:
               const commentBody = `Workflow failed for commit ${{github.sha}}.
 
             Following Critical vulnerabilities have been detected :
-                  ${criticalVulnerabilityMarkdown}
+                  ${markdown + criticalVulnerabilityMarkdown}
                 `;
                 github.rest.issues.createComment({
                   issue_number: response.data.number,
