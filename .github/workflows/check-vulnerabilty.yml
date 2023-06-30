@@ -93,10 +93,9 @@ jobs:
             const regex = /\/([^/]+)$/;
             const result1 = string1.match(regex)?.[1];
             console.log(typeof(${{ matrix.images }}))
-            const label = String(${{ matrix.images }}).match(regex)?.[1];
 
             console.log(result1); 
-            const labels = ['security', 'docker scan failed', label];
+            const labels = ['security', 'docker scan failed'];
 
             const vulnerabilities = data.map(item => item.vulnerability);
 
