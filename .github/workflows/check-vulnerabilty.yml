@@ -36,18 +36,38 @@ jobs:
     name: 🛡️ Scan docker images
     runs-on: ubuntu-latest
     permissions:
-      packages: write
+      packages: read
       contents: read
       issues: write
     needs: get_images
     strategy:
       fail-fast: false
       matrix: ${{ fromJSON(needs.get_images.outputs.images) }}
+    
     steps:
       - name: scan docker hub images
         uses: anchore/scan-action@v3
         if: ${{ !startsWith( matrix.images, 'ghcr.io' ) }}
         id: scan
+        with:
+         image: ${{ matrix.images }}
+         fail-build: true
+         severity-cutoff: critical
+         output-format: json
+
+      - name: Pull image from github container registry
+        if: ${{ startsWith( matrix.images, 'ghcr.io' ) }}
+        id: get-docker-image-layer
+        env: 
+          TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          echo $TOKEN | docker login ghcr.io -u $GITHUB_ACTOR --password-stdin
+          docker pull ${{ matrix.images }}
+
+      - name: scan github container registry images
+        uses: anchore/scan-action@v3
+        if: ${{ startsWith( matrix.images, 'ghcr.io' ) }}
+        id: scan-ghcr
         with:
          image: ${{ matrix.images }}
          fail-build: true
@@ -141,7 +161,7 @@ jobs:
 
               const commentBody = `Workflow failed for commit ${{github.sha}}.
 
-            Following Critical vulnerabilities have been detected :
+            Following Critical vulnerabilities have been detected:
                   ${criticalVulnerabilityMarkdown}
                 `;
                 github.rest.issues.createComment({
