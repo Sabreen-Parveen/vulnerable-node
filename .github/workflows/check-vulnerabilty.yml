@@ -88,13 +88,7 @@ jobs:
             data = data.matches;
 
             const { owner, repo } = context.repo;
-          
-            // const string1 = 'ghcr.io/sabreen-parveen/vulnerable-esfkjdsvnhjd:latest';
-            const regex = /\/([^/]+)$/;
-            // const result1 = string1.match(regex)?.[1];
-            const label = '${{ matrix.images }}'.match(regex)?.[1];
-
-            // console.log(result1); 
+            const regex = /^(?:.*\/)?([^/]+)$/;
             const labels = ['security', 'docker scan failed', `${'${{ matrix.images }}'.match(regex)?.[1]}`];
 
             const vulnerabilities = data.map(item => item.vulnerability);
