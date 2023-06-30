@@ -4,6 +4,8 @@ on:
   push:
     branches:
       - master
+  schedule:
+    - cron:  '* * * * *'
 
 jobs:
   get_images:
@@ -125,7 +127,7 @@ jobs:
               owner, repo, state: 'open',labels
             }))).filter(i => i.title.indexOf('Docker image security scan') !== -1)[0];
 
-            const body = `Workflow failed for commit ${{github.sha}}.
+            const body = `${ github.sha ? 'Workflow failed for commit' + github.sha : ''}
             Detected vulnerabilities in \`${{ matrix.images }}\` docker image.
             ${markdown}
                 `;
@@ -142,7 +144,7 @@ jobs:
 
             Object.entries(commentSeverity).forEach((severity) => {
               const [severityKey, severityValue] = severity
-              const commentBody = `Workflow failed for commit ${{github.sha}}.
+              const commentBody = `${ github.sha ? 'Workflow failed for commit' + github.sha : ''}
 
             Following ${severityKey} vulnerabilities have been detected :
                   ${severityValue}
