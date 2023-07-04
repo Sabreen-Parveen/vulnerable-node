@@ -73,6 +73,6 @@ jobs:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           debug: true
           script: |
-            const script = require('./create-issue.js')
+            const script = require('./.github/workflows/create-issue.js')
             const json_file = '${{  steps.scan.outputs.json || steps.scan-ghcr.outputs.json }}'
             await script({github, context, matrix, json_file})
