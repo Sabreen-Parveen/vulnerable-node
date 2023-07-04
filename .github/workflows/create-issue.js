@@ -1,9 +1,11 @@
 
 module.exports = async ({github, context, image, json_file}) => {
     const fs = require('fs');
+           console.log("line")
             let data = fs.readFileSync(json_file, 'utf8');
             data = JSON.parse(data)
             data = data.matches;
+            console.log("data")
 
             const { owner, repo } = context.repo;
             const regex = /^(?:.*\/)?([^/]+)$/;

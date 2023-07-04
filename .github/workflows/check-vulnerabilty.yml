@@ -70,6 +70,7 @@ jobs:
         if: ${{ failure() }}
         run: |
           ls
+          pwd
           find . -name "create-issue.js"  
           find . -name "./results.json"
       
