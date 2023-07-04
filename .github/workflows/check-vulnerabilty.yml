@@ -65,8 +65,9 @@ jobs:
          fail-build: true
          severity-cutoff: critical
          output-format: json
-
+      
       - uses: actions/checkout@v3
+        if: ${{ failure() }}
 
       - name: echo
         if: ${{ failure() }}
