@@ -65,14 +65,23 @@ jobs:
          fail-build: true
          severity-cutoff: critical
          output-format: json
+
       - uses: actions/checkout@v3
-      - name: Create/Update an issue of vulnerabilities 🛡️ that have been detected
+
+      - name: echo
         if: ${{ failure() }}
-        uses: actions/github-script@v6
-        with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-          debug: true
-          script: |
-            const script = require('./.github/workflows/create-issue.js')
-            const json_file = '${{  steps.scan.outputs.json || steps.scan-ghcr.outputs.json }}'
-            await script({github, context, matrix, json_file})
+        run: |
+          ls
+          find . -name "create-issue.js"  
+          find . -name "./results.json"        
+
+      # - name: Create/Update an issue of vulnerabilities 🛡️ that have been detected
+      #   if: ${{ failure() }}
+      #   uses: actions/github-script@v6
+      #   with:
+      #     github-token: ${{ secrets.GITHUB_TOKEN }}
+      #     debug: true
+      #     script: |
+      #       const script = require('./.github/workflows/create-issue.js')
+      #       const json_file = '${{  steps.scan.outputs.json || steps.scan-ghcr.outputs.json }}'
+      #       await script({github, context, matrix, json_file})
