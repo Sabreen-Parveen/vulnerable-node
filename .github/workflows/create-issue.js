@@ -1,5 +1,5 @@
 
-module.exports = async ({github, context, matrix, json_file}) => {
+module.exports = async ({github, context, image, json_file}) => {
     const fs = require('fs');
             let data = fs.readFileSync(json_file, 'utf8');
             data = JSON.parse(data)
@@ -7,7 +7,7 @@ module.exports = async ({github, context, matrix, json_file}) => {
 
             const { owner, repo } = context.repo;
             const regex = /^(?:.*\/)?([^/]+)$/;
-            const labels = ['security', 'docker scan failed', `${'${ matrix.images }'.match(regex)?.[1]}`];
+            const labels = ['security', 'docker scan failed', `${image.match(regex)?.[1]}`];
 
             const vulnerabilities = data.map(item => item.vulnerability);
 
@@ -24,7 +24,7 @@ module.exports = async ({github, context, matrix, json_file}) => {
 
             let markdown = "| Image | Low | High | Medium | Critical | Scan Location |\n";
             markdown += "| --- | --- | --- | --- | --- | --- |\n";
-            markdown += `| ${ matrix.images } |`;
+            markdown += `| ${ image } |`;
             for (const severity of ["Low", "High", "Medium", "Critical"]) {
               markdown += ` ${countBySeverity[severity] || 0} |`;
             }
@@ -64,7 +64,7 @@ module.exports = async ({github, context, matrix, json_file}) => {
             }))).filter(i => i.title.indexOf('Docker image security scan') !== -1)[0];
             
             const body = `Workflow failed for commit ${github.sha}.
-            Detected vulnerabilities in \`${matrix.images }\` docker image.
+            Detected vulnerabilities in \`${image}\` docker image.
             ${markdown}
                 `;
         

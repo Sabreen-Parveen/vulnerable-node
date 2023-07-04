@@ -66,6 +66,13 @@ jobs:
          severity-cutoff: critical
          output-format: json
       
+      - name: echo
+        if: ${{ failure() }}
+        run: |
+          ls
+          find . -name "create-issue.js"  
+          find . -name "./results.json"
+      
       - uses: actions/checkout@v3
         if: ${{ failure() }}
 
@@ -85,4 +92,4 @@ jobs:
           script: |
             const script = require('./.github/workflows/create-issue.js')
             const json_file = '${{  steps.scan.outputs.json || steps.scan-ghcr.outputs.json }}'
-            await script({github, context, matrix, json_file})
+            await script({github, context, [${{ matrix.images }}], json_file})
