@@ -75,5 +75,5 @@ jobs:
           debug: true
           script: |
             const script = require('./create-issue.js')
-            const json_file = ${{  steps.scan.outputs.json || steps.scan-ghcr.outputs.json }}
+            const json_file = '${{  steps.scan.outputs.json || steps.scan-ghcr.outputs.json }}'
             await script({github, context, matrix, json_file})
