@@ -63,8 +63,8 @@ module.exports = async ({github, context, matrix, json_file}) => {
               owner, repo, state: 'open',labels
             }))).filter(i => i.title.indexOf('Docker image security scan') !== -1)[0];
             
-            const body = `Workflow failed for commit ${{github.sha}}.
-            Detected vulnerabilities in \`${{ matrix.images }}\` docker image.
+            const body = `Workflow failed for commit ${github.sha}.
+            Detected vulnerabilities in \`${matrix.images }\` docker image.
             ${markdown}
                 `;
         
@@ -78,7 +78,7 @@ module.exports = async ({github, context, matrix, json_file}) => {
                 labels
             });
 
-            const commentBody = `Workflow failed for commit ${{github.sha}}.
+            const commentBody = `Workflow failed for commit ${ github.sha }.
 
             Following Critical vulnerabilities have been detected:
                   ${criticalVulnerabilityMarkdown}
