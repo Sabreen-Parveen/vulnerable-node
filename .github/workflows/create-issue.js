@@ -1,8 +1,9 @@
 
 module.exports = async ({github, context, image, json_file}) => {
-    const fs = require('fs');
+           const fs = require('fs');
            console.log(json_file)
             let data = fs.readFileSync(json_file, 'utf8');
+            console.log(data)
             data = JSON.parse(data)
             data = data.matches;
             console.log("data")
