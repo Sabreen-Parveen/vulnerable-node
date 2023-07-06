@@ -170,13 +170,13 @@ jobs:
           debug: true
           script: |
             const regex = /^(?:.*\/)?([^/]+)$/;
+            const { owner, repo } = context.repo;
             const labels = ['security', 'docker scan failed', `${'${{ matrix.images }}'.match(regex)?.[1]}`];
             const existingIssue = (await github.paginate(github.rest.issues.listForRepo.endpoint.merge({
               owner, repo, state: 'open',labels
             }))).filter(i => i.title.indexOf('Docker image security scan') !== -1)[0];
             
             if (existingIssue) {
-              const { owner, repo } = context.repo;
               const commentBody = `Closing issue, all vulnerabilirties have been removed 🎉
               `;
               github.rest.issues.createComment({
