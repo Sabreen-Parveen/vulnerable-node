@@ -177,12 +177,12 @@ jobs:
             }))).filter(i => i.title.indexOf('Docker image security scan') !== -1)[0];
             
             if (existingIssue) {
-              const commentBody = `Closing issue, all vulnerabilirties have been removed 🎉
+              const body = `Closing issue, all vulnerabilirties have been removed 🎉
               `;
-              github.rest.issues.createComment({
-                  issue_number: existingIssue.number,
-                  owner, repo,
-                  body: commentBody
-                }); 
+              # github.rest.issues.createComment({
+              #     issue_number: existingIssue.number,
+              #     owner, repo,
+              #     body: commentBody
+              #   }); 
               github.rest.issues.update({ owner, repo, issue_number: existingIssue.number, body, state:close });
             }
