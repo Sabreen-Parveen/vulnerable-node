@@ -184,5 +184,5 @@ jobs:
               #     owner, repo,
               #     body: commentBody
               #   }); 
-              github.rest.issues.update({ owner, repo, issue_number: existingIssue.number, body, state:close });
+              github.rest.issues.update({ owner, repo, issue_number: existingIssue.number, body, state_reason: "efgD", state:close });
             }
