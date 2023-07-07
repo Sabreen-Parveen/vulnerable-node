@@ -179,5 +179,5 @@ jobs:
             if (existingIssue) {
               const body = `Closing issue, all vulnerabilirties have been removed 🎉
               `;
-              github.rest.issues.update({ owner, repo, issue_number: existingIssue.number, body, state_reason: { "description":"efgD"}, state:"close" });
+              github.rest.issues.update({ owner, repo, issue_number: existingIssue.number, body, state_reason: "completed", state:"close" });
             }
