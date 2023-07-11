@@ -15,7 +15,7 @@ jobs:
   rebuild-docker-image:
     runs-on: ubuntu-latest
     env:
-      image_name: "ghcr.io/sabreen-parveen/vulnerable:2.4" 
+      image_name: "ghcr.io/sabreen-parveen/vulnerable:latest" 
 
     steps:
       - name: Checkout
