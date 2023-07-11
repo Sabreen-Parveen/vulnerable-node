@@ -1,0 +1,81 @@
+name: Rebuild docker image
+on: 
+   #schedule:
+   # - cron: '00 11 * * *'
+  # workflow_dispatch:
+  push:
+    branches: 
+      - master
+
+permissions:
+  packages: write
+  contents: read
+
+jobs:
+  rebuild-docker-image:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix: 
+        image: 
+          - image_name: "ghcr.io/sabreen-parveen/vulnerable:2.4" 
+            dockerfile: Dockerfile
+            
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+        # with: 
+        #   ref:  
+        #     update-image
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
+
+      - name: Get base image 
+        id: get-base-image
+        run: |
+          ls
+          echo "base_image=$(cat ${{ matrix.image.dockerfile }} | grep -i "FROM" | awk '{print $2}')" >> "$GITHUB_OUTPUT"
+
+      - name: check the base image layers from docker hub
+        id: get-base-image-layer
+        run: |
+          docker pull ${{steps.get-base-image.outputs.base_image }}
+          base_image_layers=($(docker inspect  ${{steps.get-base-image.outputs.base_image }} |  jq -r ".[].RootFS.Layers[]"))
+          echo "output is $base_image_layers"
+          echo "base_image_layers_list=$(jq -c -n '$ARGS.positional' --args "${base_image_layers[@]}")" >> $GITHUB_OUTPUT          
+          
+      - name: check the custom docker image layers
+        id: get-docker-image-layer
+        env: 
+          TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          echo $TOKEN | docker login ghcr.io -u $GITHUB_ACTOR --password-stdin
+          docker pull ${{ matrix.image.image_name }}
+          custom_image_layers=($(docker inspect  ${{ matrix.image.image_name }} |  jq -r ".[].RootFS.Layers[]"))
+          echo "output is $custom_image_layers"
+          echo "custom_image_layers_list=$(jq -c -n '$ARGS.positional' --args "${custom_image_layers[@]}")" >> $GITHUB_OUTPUT 
+      
+      - uses: actions/checkout@v3
+      - name: Check if there is any update in the base image or not!
+        env: 
+            TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          base_image_layers='${{steps.get-base-image-layer.outputs.base_image_layers_list}}'
+          custom_image_layers='${{steps.get-docker-image-layer.outputs.custom_image_layers_list}}'
+          IFS=, read -ra base_image_layers <<< "${base_image_layers//[[:space:]]/}"
+          IFS=, read -ra custom_image_layers <<< "${custom_image_layers//[[:space:]]/}"
+
+          # Compare corresponding values in the arrays
+          for i in "${!base_image_layers[@]}"; do
+              if [[ "${base_image_layers[$i]}" != "${custom_image_layers[$i]}" ]]; then
+                  echo "There is an update in the base image, publishing latest docker image"
+                  cd containers/fundwave
+                  [[ "$GITHUB_REF_NAME" == "master" ]] && export TAG="latest" || TAG="$GITHUB_REF_NAME"
+                  docker build --pull --no-cache --tag ghcr.io/sabreen-parveen/vulnerable:$TAG
+                  docker push ghcr.io/sabreen-parveen/vulnerable:$TAG
+                  echo "false"
+                  exit
+              fi
+          done
+
+          echo "Image is already up to date"
