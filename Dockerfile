@@ -1,4 +1,3 @@
-#FROM library/node:6
 FROM ubuntu:xenial
 
 MAINTAINER "Daniel Garcia aka (cr0hn)" <cr0hn@cr0hn.com>
