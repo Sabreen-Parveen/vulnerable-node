@@ -1,4 +1,4 @@
-name: Rebuild docker image
+name: Build docker image
 on: 
    #schedule:
    # - cron: '00 11 * * *'
@@ -8,6 +8,7 @@ on:
       - master
 
 permissions:
+  id-token: write
   packages: write
   contents: read
 
@@ -16,8 +17,8 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix: 
-        image: 
-          - image_name: "ghcr.io/sabreen-parveen/vulnerable:2.4" 
+        image:
+          - image_name: "ghcr.io/sabreen-parveen/vulnerable:latest" 
             dockerfile: Dockerfile
             
     steps:
@@ -55,7 +56,6 @@ jobs:
           echo "output is $custom_image_layers"
           echo "custom_image_layers_list=$(jq -c -n '$ARGS.positional' --args "${custom_image_layers[@]}")" >> $GITHUB_OUTPUT 
       
-      - uses: actions/checkout@v3
       - name: Check if there is any update in the base image or not!
         env: 
             TOKEN: ${{ secrets.GITHUB_TOKEN }}
