@@ -69,12 +69,11 @@ jobs:
           for i in "${!base_image_layers[@]}"; do
               if [[ "${base_image_layers[$i]}" != "${custom_image_layers[$i]}" ]]; then
                   echo "There is an update in the base image, publishing latest docker image"
-                  cd containers/fundwave
                   [[ "$GITHUB_REF_NAME" == "master" ]] && export TAG="latest" || TAG="$GITHUB_REF_NAME"
                   docker build --pull --no-cache --tag ghcr.io/sabreen-parveen/vulnerable:$TAG
                   docker push ghcr.io/sabreen-parveen/vulnerable:$TAG
                   echo "false"
-                  exit
+                  exit 0
               fi
           done
 
