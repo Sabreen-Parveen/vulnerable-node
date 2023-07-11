@@ -10,12 +10,9 @@ on:
 jobs:
   rebuild-docker-image:
     runs-on: ubuntu-latest
-    strategy:
-      matrix: 
-        image:
-          - image_name: "ghcr.io/sabreen-parveen/vulnerable:2.4" 
-            dockerfile: Dockerfile
-            
+    env:
+      image_name: "ghcr.io/sabreen-parveen/vulnerable:2.4" 
+
     steps:
       - name: Checkout
         uses: actions/checkout@v3
@@ -30,7 +27,7 @@ jobs:
         id: get-base-image
         run: |
           ls
-          echo "base_image=$(cat ${{ matrix.image.dockerfile }} | grep -i "FROM" | awk '{print $2}')" >> "$GITHUB_OUTPUT"
+          echo "base_image=$(cat Dockerfile | grep -i "FROM" | awk '{print $2}')" >> "$GITHUB_OUTPUT"
 
       - name: check the base image layers from docker hub
         id: get-base-image-layer
@@ -46,8 +43,8 @@ jobs:
           TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           echo $TOKEN | docker login ghcr.io -u $GITHUB_ACTOR --password-stdin
-          docker pull ${{ matrix.image.image_name }}
-          custom_image_layers=($(docker inspect  ${{ matrix.image.image_name }} |  jq -r ".[].RootFS.Layers[]"))
+          docker pull $image_name
+          custom_image_layers=($(docker inspect  $image_name |  jq -r ".[].RootFS.Layers[]"))
           echo "output is $custom_image_layers"
           echo "custom_image_layers_list=$(jq -c -n '$ARGS.positional' --args "${custom_image_layers[@]}")" >> $GITHUB_OUTPUT 
       
