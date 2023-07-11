@@ -7,11 +7,6 @@ on:
     branches: 
       - master
 
-permissions:
-  id-token: write
-  packages: write
-  contents: read
-
 jobs:
   rebuild-docker-image:
     runs-on: ubuntu-latest
