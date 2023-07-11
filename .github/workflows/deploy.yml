@@ -18,7 +18,7 @@ jobs:
     strategy:
       matrix: 
         image:
-          - image_name: "ghcr.io/sabreen-parveen/vulnerable:latest" 
+          - image_name: "ghcr.io/sabreen-parveen/vulnerable:2.4" 
             dockerfile: Dockerfile
             
     steps:
