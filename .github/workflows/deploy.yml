@@ -63,7 +63,9 @@ jobs:
 
           # Compare corresponding values in the arrays
           for i in "${base_image_layers[@]}"; do
-              if [[ "${base_image_layers[$i]}" != "${custom_image_layers[$i]}" ]]; then
+              val1=$( echo "${base_image_layers[$i]}"| sed 's/]//g')
+              val2=$( echo "${custom_image_layers[$i]}"| sed 's/]//g')
+              if [[ "$val1" != "$val2" ]]; then
                   echo "There is an update in the base image, publishing latest docker image"
                   [[ "$GITHUB_REF_NAME" == "master" ]] && export TAG="latest" || TAG="$GITHUB_REF_NAME"
                   docker build --pull --no-cache --tag ghcr.io/sabreen-parveen/vulnerable:$TAG .
