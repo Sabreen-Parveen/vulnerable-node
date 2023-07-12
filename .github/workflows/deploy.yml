@@ -38,8 +38,8 @@ jobs:
         run: |
           docker pull ${{steps.get-base-image.outputs.base_image }}
           base_image_layers=($(docker inspect  ${{steps.get-base-image.outputs.base_image }} |  jq -r ".[].RootFS.Layers[]"))
-          echo "output is $base_image_layers"
-          echo "base_image_layers_list=$(jq -c -n '$ARGS.positional' --args "${base_image_layers[@]}")" >> $GITHUB_OUTPUT          
+          echo "output is ${base_image_layers[@]}"
+          echo "base_image_layers_list=${base_image_layers[@]}" >> $GITHUB_OUTPUT          
           
       - name: check the custom docker image layers
         id: get-docker-image-layer
@@ -50,29 +50,29 @@ jobs:
           docker pull $image_name
           custom_image_layers=($(docker inspect  $image_name |  jq -r ".[].RootFS.Layers[]"))
           echo "output is $custom_image_layers"
-          echo "custom_image_layers_list=$(jq -c -n '$ARGS.positional' --args "${custom_image_layers[@]}")" >> $GITHUB_OUTPUT 
+          echo "custom_image_layers_list=${custom_image_layers[@]}" >> $GITHUB_OUTPUT 
       
       - name: Check if there is any update in the base image or not!
         env: 
             TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           base_image_layers='${{steps.get-base-image-layer.outputs.base_image_layers_list}}'
+          echo "lets print the base image layer"
+          echo $base_image_layers
+          echo "lets print custom image layer"
           custom_image_layers='${{steps.get-docker-image-layer.outputs.custom_image_layers_list}}'
-          IFS=, read -ra base_image_layers <<< "${base_image_layers//[[:space:]]/}"
-          IFS=, read -ra custom_image_layers <<< "${custom_image_layers//[[:space:]]/}"
-
-          # Compare corresponding values in the arrays
-          for i in "${!base_image_layers[@]}"; do
-              val1=$(echo "${base_image_layers[$i]}"| sed 's/]//g')
-              val2=$(echo "${custom_image_layers[$i]}"| sed 's/]//g')
-              if [[ "$val1" != "$val2" ]]; then
-                  echo "There is an update in the base image, publishing latest docker image"
-                  [[ "$GITHUB_REF_NAME" == "master" ]] && export TAG="latest" || TAG="$GITHUB_REF_NAME"
-                  docker build --pull --no-cache --tag ghcr.io/sabreen-parveen/vulnerable:$TAG .
-                  docker push ghcr.io/sabreen-parveen/vulnerable:$TAG
-                  echo "false"
-                  exit 0
-              fi
+          echo $custom_image_layers
+          if [[ $custom_image_layers =~ $base_image_layers ]]; then
+            echo "Image is already up to date"
+          else
+            echo "There is an update in the base image, publishing latest docker image"
+            [[ "$GITHUB_REF_NAME" == "master" ]] && export TAG="latest" || TAG="$GITHUB_REF_NAME"
+            docker build --pull --no-cache --tag ghcr.io/sabreen-parveen/vulnerable:$TAG .
+            docker push ghcr.io/sabreen-parveen/vulnerable:$TAG
+              fi              fi
           done
+
+          echo "Image is already up to date"
+          fi                      done
 
           echo "Image is already up to date"
