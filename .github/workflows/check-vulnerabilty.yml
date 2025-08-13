@@ -14,7 +14,7 @@ jobs:
       images: ${{ steps.generate.outputs.image_list }}
     steps:
       - name: checkout repo
-        uses: actions/checkout@v3
+        uses: actions/checkout@v5
       - name: Generate Image Matrix
         id: generate
         run: |
