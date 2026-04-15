@@ -67,7 +67,7 @@ jobs:
      
       - name: Create/Update an issue of vulnerabilities 🛡️ that have been detected
         if: ${{ failure() }}
-        uses: actions/github-script@v6
+        uses: actions/github-script@v9
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           debug: true
@@ -164,7 +164,7 @@ jobs:
             
       - name: Delete issues when scans are successful
         if: ${{ success() }}
-        uses: actions/github-script@v6
+        uses: actions/github-script@v9
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           debug: true
